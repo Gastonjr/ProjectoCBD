@@ -107,8 +107,8 @@ Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, Utili
 
 Go
 --Funções que devem funcionar.--
-IF OBJECT_ID (N'CBDLeiloes.passToHash', N'TF') IS NOT NULL
-    DROP FUNCTION CBDLeiloes.passToHash;
+IF OBJECT_ID (N'CBDLeiloes.Schema1.passToHash', N'TF') IS NOT NULL
+    DROP FUNCTION CBDLeiloes.Schema1.passToHash;
 GO
 CREATE FUNCTION Schema1.passToHash (@pass NVARCHAR)
 RETURNS NVARCHAR
@@ -122,8 +122,8 @@ GO
 
 
 
-IF OBJECT_ID (N'CBDLeiloes.passConfirm', N'TF') IS NOT NULL
-    DROP FUNCTION CBDLeiloes.passConfirm;
+IF OBJECT_ID (N'CBDLeiloes.Schema1.passConfirm', N'TF') IS NOT NULL
+    DROP FUNCTION CBDLeiloes.Schema1.passConfirm;
 GO
 
 CREATE FUNCTION Schema1.passConfirm (@user int, @pass NVARCHAR)
