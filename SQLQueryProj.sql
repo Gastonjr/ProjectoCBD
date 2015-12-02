@@ -107,3 +107,18 @@ Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, Utili
 
 Go
 --Funções que devem funcionar.--
+IF OBJECT_ID (N'CBDLeiloes.passToHash', N'TF') IS NOT NULL
+    DROP FUNCTION CBDLeiloes.passToHash;
+GO
+CREATE FUNCTION Schema1.passToHash (@pass NVARCHAR)
+RETURNS NVARCHAR
+AS
+BEGIN
+	DECLARE @hash Nvarchar(500)
+	set @hash=HASHBYTES('SHA1', @pass);
+	return @hash
+END;
+GO
+
+
+--Procedimentos que procedem.--
