@@ -110,6 +110,7 @@ Go
 IF OBJECT_ID (N'CBDLeiloes.Schema1.passToHash', N'TF') IS NOT NULL
     DROP FUNCTION CBDLeiloes.Schema1.passToHash;
 GO
+--Converte a password para uma hash--
 CREATE FUNCTION Schema1.passToHash (@pass NVARCHAR)
 RETURNS NVARCHAR
 AS
@@ -120,12 +121,29 @@ BEGIN
 END;
 GO
 
+IF OBJECT_ID (N'CBDLeiloes.Schema1.idadeTens', N'TF') IS NOT NULL
+    DROP FUNCTION CBDLeiloes.Schema1.idadeTens;
+GO
+--Calcular a idade a partir da data--
+CREATE FUNCTION Schema1.idadeTens(@userId int)
+RETURNS int
+AS
+BEGIN
+	DECLARE @idade int
+	select @idade = datediff(yy,UtilizadorDataNascimento, GETDATE()) 
+	from Utilizador
+	where @userId = UtilizadorId
+	if(@idade is NULL)
+		raiserror(50001,0,5,'Se estás a ver esta mensagem o utilizador provavelmente nao existe. OU FIZESTE MERDA!!!');
 
+	return @idade
+END;
+GO
 
 IF OBJECT_ID (N'CBDLeiloes.Schema1.passConfirm', N'TF') IS NOT NULL
     DROP FUNCTION CBDLeiloes.Schema1.passConfirm;
 GO
-
+--Compara a pass do utilizador (usar em logins)--
 CREATE FUNCTION Schema1.passConfirm (@user int, @pass NVARCHAR)
 RETURNS int
 AS
