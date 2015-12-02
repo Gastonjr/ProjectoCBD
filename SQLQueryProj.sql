@@ -121,4 +121,23 @@ END;
 GO
 
 
+
+IF OBJECT_ID (N'CBDLeiloes.passConfirm', N'TF') IS NOT NULL
+    DROP FUNCTION CBDLeiloes.passConfirm;
+GO
+
+CREATE FUNCTION Schema1.passConfirm (@user int, @pass NVARCHAR)
+RETURNS int
+AS
+BEGIN
+	DECLARE @returnVal Nvarchar(500)
+	if exists(select UtilizadorId, UtilizadorSenha from CBDLeiloes.Schema1.Utilizador 
+	where UtilizadorId=@user and UtilizadorSenha=Schema1.passToHash(@pass))
+  set @returnVal=1
+  else
+  set @returnVal=0
+	return @returnVal
+END;
+GO
+
 --Procedimentos que procedem.--
