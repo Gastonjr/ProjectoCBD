@@ -11,6 +11,7 @@ Go
 
 If DB_ID('CBDLeiloes') is null
 	Raiserror('BD não criada',16,1)
+	return
 Go
 
 Use CBDLeiloes
@@ -103,9 +104,6 @@ Alter table Schema1.Licitacao add constraint Licitacao_fk_Utilizador
 Go
 
 --Funções que devem funcionar.--
-IF OBJECT_ID (N'CBDLeiloes.Schema1.passToHash', N'TF') IS NOT NULL
-    DROP FUNCTION CBDLeiloes.Schema1.passToHash;
-GO
 --Converte a password para uma hash--
 CREATE FUNCTION Schema1.passToHash (@pass NVARCHAR)
 RETURNS NVARCHAR
@@ -118,9 +116,6 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID (N'CBDLeiloes.Schema1.idadeTens', N'TF') IS NOT NULL
-    DROP FUNCTION CBDLeiloes.Schema1.idadeTens;
-GO
 --Calcular a idade a partir da data--
 CREATE FUNCTION Schema1.idadeTens(@userId int)
 RETURNS int
@@ -138,9 +133,7 @@ BEGIN
 END;
 GO
 
-IF OBJECT_ID (N'CBDLeiloes.Schema1.passConfirm', N'TF') IS NOT NULL
-    DROP FUNCTION CBDLeiloes.Schema1.passConfirm;
-GO
+
 --Compara a pass do utilizador (usar em logins)--
 CREATE FUNCTION Schema1.passConfirm (@user int, @pass NVARCHAR)
 RETURNS int
@@ -158,6 +151,15 @@ END;
 GO
 
 --Procedimentos que procedem.--
+
+--Procedimento para registar o utilizador(Precisa ainda de uns retoques)--
+create proc Schema1.procRegUser
+		(@username varchar(40), @password varchar(50), @email varchar(50),
+		@userDoB varchar(50),@userPhone varchar(50))
+as
+Insert into CBDLeiloes.Schema1.Utilizador (UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone)
+		values (@username,Schema1.passToHash(@password),@email,@userDoB,@userPhone)
+
 
 --Inserção de coisas para razões tal.--
 Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
