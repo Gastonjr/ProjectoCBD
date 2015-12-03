@@ -101,11 +101,7 @@ Alter table Schema1.Licitacao add constraint Licitacao_fk_Utilizador
             foreign key (LicitacaoUtilizadorID) references Schema1.Utilizador(UtilizadorId) on delete cascade;
 
 Go
---Inserção de coisas para razões tal.--
-Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 
-Go
 --Funções que devem funcionar.--
 IF OBJECT_ID (N'CBDLeiloes.Schema1.passToHash', N'TF') IS NOT NULL
     DROP FUNCTION CBDLeiloes.Schema1.passToHash;
@@ -116,6 +112,7 @@ RETURNS NVARCHAR
 AS
 BEGIN
 	DECLARE @hash Nvarchar(500)
+	SET NOCOUNT ON
 	set @hash=HASHBYTES('SHA1', @pass);
 	return @hash
 END;
@@ -130,6 +127,7 @@ RETURNS int
 AS
 BEGIN
 	DECLARE @idade int
+	SET NOCOUNT ON  
 	select @idade = datediff(yy,UtilizadorDataNascimento, GETDATE()) 
 	from Utilizador
 	where @userId = UtilizadorId
@@ -149,6 +147,7 @@ RETURNS int
 AS
 BEGIN
 	DECLARE @returnVal Nvarchar(500)
+	SET NOCOUNT ON  
 	if exists(select UtilizadorId, UtilizadorSenha from CBDLeiloes.Schema1.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha=Schema1.passToHash(@pass))
   set @returnVal=1
@@ -159,3 +158,9 @@ END;
 GO
 
 --Procedimentos que procedem.--
+
+--Inserção de coisas para razões tal.--
+Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
+								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
+
+Go
