@@ -157,10 +157,24 @@ create proc Schema1.procRegUser
 		(@username varchar(40), @password varchar(50), @email varchar(50),
 		@userDoB varchar(50),@userPhone varchar(50))
 as
+SET NOCOUNT ON
 Insert into CBDLeiloes.Schema1.Utilizador (UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone)
-		values (@username,Schema1.passToHash(@password),@email,@userDoB,@userPhone)
-
-
+		values (@username,Schema1.passToHash(@password),@email,@userDoB,GETDATE(),@userPhone)
+Go
+--Procedimento para colocar um produto à venda--
+create proc Schema1.procVenderProd
+			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), @ProdValorMin int)
+as
+SET NOCOUNT ON
+Insert into CBDLeiloes.Schema1.Produto (ProdutoDescricao, ProdutoNome, ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
+		values (@ProdDesc,@ProdNome, @ProdDataLimite, @ProdValorMin)
+Go
+--Procedimento para licitar num produto--
+Create proc Schema1.procLicitarProd
+			(@username varchar(40), @password varchar(50), @email varchar(50),
+				@userDoB varchar(50),@userPhone varchar(50))
+SET NOCOUNT ON
+Insert into CBDLeiloes.Schema1.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID)
 --Inserção de coisas para razões tal.--
 Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
