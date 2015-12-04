@@ -24,9 +24,9 @@ Go
 --Criação de coisas onde se metem outras coisas--
 Create table Schema1.Utilizador (
 	UtilizadorNome varchar(50),
-	UtilizadorSenha varchar(50),
+	UtilizadorSenha varchar(50) not null,
 	UtilizadorId int identity(1,1) not null,
-	UtilizadorEmail varchar(255)
+	UtilizadorEmail varchar(255) not null
 	constraint mail_constraint
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto date,
@@ -123,7 +123,7 @@ AS
 BEGIN
 	DECLARE @idade int
 	SET NOCOUNT ON  
-	select @idade = datediff(yy,UtilizadorDataNascimento, GETDATE()) 
+	select @idade = datediff(YYYY,UtilizadorDataNascimento, GETDATE()) 
 	from Utilizador
 	where @userId = UtilizadorId
 	if(@idade is NULL)
@@ -139,9 +139,9 @@ CREATE FUNCTION Schema1.passConfirm (@user int, @pass NVARCHAR)
 RETURNS int
 AS
 BEGIN
-	DECLARE @returnVal Nvarchar(500)
+	DECLARE @returnVal int
 	SET NOCOUNT ON  
-	if exists(select UtilizadorId, UtilizadorSenha from CBDLeiloes.Schema1.Utilizador 
+	if exists(select  UtilizadorSenha from CBDLeiloes.Schema1.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha=Schema1.passToHash(@pass))
   set @returnVal=1
   else
@@ -171,10 +171,13 @@ Insert into CBDLeiloes.Schema1.Produto (ProdutoDescricao, ProdutoNome, ProdutoDa
 Go
 --Procedimento para licitar num produto--
 Create proc Schema1.procLicitarProd
-			(@username varchar(40), @password varchar(50), @email varchar(50),
-				@userDoB varchar(50),@userPhone varchar(50))
+			(@userid int, @prodid int, @licitaval int)
+as
 SET NOCOUNT ON
-Insert into CBDLeiloes.Schema1.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID)
+Insert into CBDLeiloes.Schema1.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
+			values(@userid, @prodid,@licitaval)
+Go
+
 --Inserção de coisas para razões tal.--
 Insert into CBDLeiloes.Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
