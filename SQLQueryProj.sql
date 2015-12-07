@@ -109,9 +109,10 @@ CREATE FUNCTION Schema1.passToHash (@pass NVARCHAR)
 RETURNS NVARCHAR
 AS
 BEGIN
-	DECLARE @hash Nvarchar(500)
+	DECLARE @hash Nvarchar(32)
 	SET NOCOUNT ON
-	set @hash=HASHBYTES('SHA1', @pass);
+	DECLARE @hash Nvarchar(32)
+	set @hash= CONVERT(NVARCHAR(32), HASHBYTES('SHA1', @pass), 2)
 	return @hash
 END;
 GO
@@ -127,7 +128,7 @@ BEGIN
 	from Utilizador
 	where @userId = UtilizadorId
 	if(@idade is NULL)
-		raiserror(50001,0,5,'Se estás a ver esta mensagem o utilizador provavelmente nao existe. OU FIZESTE MERDA!!!');
+		return 0
 
 	return @idade
 END;
