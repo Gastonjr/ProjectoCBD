@@ -209,10 +209,14 @@ Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, Utiliza
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 
 Go
+Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
+values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965287167');										
+								Go
 
 
-/*--Inserção de dados  utilizador ou entâo podes gerar ods dados automatico.--
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
+/*
+--Inserção de dados  utilizador ou entâo podes gerar ods dados automatico.--
+Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 								
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Andre','palavra','palavra.p@io.at','1990-08-31','2014-10-12','927357544');
@@ -225,5 +229,5 @@ Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail,
 Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965288167');										
 								Go
-
 */
+
