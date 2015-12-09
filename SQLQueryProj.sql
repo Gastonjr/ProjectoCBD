@@ -35,7 +35,7 @@ Create table schemaUtilizador.Utilizador (
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto date,
 	UtilizadorDataNascimento date,
-	UtilizadorTelefone varchar(15)
+	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone
 		unique (UtilizadorTelefone )
 	constraint CK_Telelfone
@@ -116,9 +116,6 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
 Go
 
 --Funções que devem funcionar.--
-IF OBJECT_ID (N'SchemaUtilizador.funcPassToHash', N'TF') IS NOT NULL
-    DROP FUNCTION SchemaUtilizador.funcPassToHash;
-GO
 --Converte a password para uma hash--/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcPassToHash (@pass NVARCHAR)
 RETURNS NVARCHAR(32)
@@ -129,12 +126,9 @@ BEGIN
 	return @hash
 END;
 GO
-
+/*--Teste da conversão da pass
 select SchemaUtilizador.funcPassToHash('password1')/*exemplo que o mais precisa-se no projeto*/
-
-IF OBJECT_ID (N'SchemaUtilizador.funcIdadeTens', N'TF') IS NOT NULL
-    DROP FUNCTION SchemaUtilizador.funcIdadeTens;
-GO
+*/
 --Calcular a idade a partir da data --/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcIdadeTens(@userId int)
 RETURNS int
@@ -156,12 +150,9 @@ BEGIN
 END
 GO
 
-
+/*--Teste da idade--
 select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
-
-
-IF OBJECT_ID (N'SchemaUtilizador.funcPassConfirm ', N'TF') IS NOT NULL
-    DROP FUNCTION  SchemaUtilizador.funcPassConfirm ;
+*/
 GO
 --Compara a pass do utilizador (usar em logins)--
 CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
@@ -169,7 +160,6 @@ RETURNS int
 AS
 BEGIN
 	DECLARE @returnVal Nvarchar(500)
-	--SET NOCOUNT ON  
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass))
   set @returnVal=1
@@ -178,26 +168,68 @@ BEGIN
 	return @returnVal
 END;
 Go
+--Procedimentos que Procedem--
+
+--Procedimento para registar o utilizador(Precisa ainda de uns retoques)--
+create proc SchemaUtilizador.procRegUser
+		(@username varchar(40), @password varchar(32), @email varchar(255),
+		@userDoB varchar(50),@userPhone varchar(9))
+as
+BEGIN
+	declare @Hash varchar(32)
+	DECLARE @msgErro varchar(500)
+
+	if @email not like '%@%.%'
+	begin
+		set @msgErro = 'O Email é inválido: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	if exists (select 1 from Utilizador where UtilizadorEmail=@email)
+	begin
+		set @msgErro = 'O utilizador já existe: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	
+	set @Hash= SchemaUtilizador.funcPassToHash(@password)
+
+	insert into SchemaUtilizador.Utilizador(UtilizadorEmail,UtilizadorNome,[UtilizadorSenha],UtilizadorDataRegisto,UtilizadorDataNascimento,UtilizadorTelefone)
+							  values (@email,@username,@Hash,GETDATE(),@userDoB,@userPhone)
+
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
+
 --Procedimento para colocar um produto à venda--
 
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), @ProdValorMin int)
 as
-SET NOCOUNT ON
-Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
+BEGIN
+	Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
 		values (@ProdNome, @ProdDesc, @ProdDataLimite, @ProdValorMin)
+END
 Go
+
 --Procedimento para licitar num produto--
 Create proc SchemaProduto.procLicitarProd
 			(@userid int, @prodid int, @licitaval int)
 as
 SET NOCOUNT ON
-Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
-			values(@userid, @prodid,@licitaval)
+BEGIN
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
+				values(@userid, @prodid,@licitaval)
+END
 Go
 
 --Inserção de coisas para razões tal.--
-Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
+Insert into SchemaUtilizador.procRegUser(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 
 Go
@@ -205,19 +237,4 @@ Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, Utiliza
 								values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965287167');										
 								Go
 
-/*--Inserção de dados  utilizador ou entâo podes gerar ods dados automatico.--
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Andre','palavra','palavra.p@io.at','1990-08-31','2014-10-12','927357544');
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Marcia','m09cia','marcia.cbd@gmail.com','1995-03-20','2009-06-30','222357654');
-								
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Neves','neves2015','neves_carvalho@hotmail.com','19-10-12','1991-10-12','919942285');										
 
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965288167');										
-								Go
-
-*/
