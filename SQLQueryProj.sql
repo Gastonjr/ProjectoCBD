@@ -182,13 +182,20 @@ BEGIN
 	declare @Hash varchar(32)
 	DECLARE @msgErro varchar(500)
 
+	if @email not like '%@%.%'
+	begin
+		set @msgErro = 'O Email é inválido: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
 	if exists (select 1 from Utilizador where UtilizadorEmail=@email)
 	begin
 		set @msgErro = 'O utilizador já existe: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-
+	
 	set @Hash= SchemaUtilizador.funcPassToHash(@password)
 
 	insert into SchemaUtilizador.Utilizador(UtilizadorEmail,UtilizadorNome,[UtilizadorSenha],UtilizadorDataRegisto,UtilizadorDataNascimento,UtilizadorTelefone)
@@ -207,9 +214,10 @@ GO
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), @ProdValorMin int)
 as
-SET NOCOUNT ON
-Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
+BEGIN
+	Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
 		values (@ProdNome, @ProdDesc, @ProdDataLimite, @ProdValorMin)
+END
 Go
 
 --Procedimento para licitar num produto--
@@ -217,12 +225,14 @@ Create proc SchemaProduto.procLicitarProd
 			(@userid int, @prodid int, @licitaval int)
 as
 SET NOCOUNT ON
-Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
-			values(@userid, @prodid,@licitaval)
+BEGIN
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
+				values(@userid, @prodid,@licitaval)
+END
 Go
 
 --Inserção de coisas para razões tal.--
-Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
+Insert into SchemaUtilizador.procRegUser(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 
 Go
