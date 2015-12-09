@@ -38,7 +38,7 @@ Create table schemaUtilizador.Utilizador (
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto date,
 	UtilizadorDataNascimento date,
-	UtilizadorTelefone varchar(15)
+	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone
 		unique (UtilizadorTelefone )
 	constraint CK_Telelfone
@@ -119,9 +119,6 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
 Go
 
 --Funções que devem funcionar.--
-IF OBJECT_ID (N'SchemaUtilizador.funcPassToHash', N'TF') IS NOT NULL
-    DROP FUNCTION SchemaUtilizador.funcPassToHash;
-GO
 --Converte a password para uma hash--/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcPassToHash (@pass NVARCHAR)
 RETURNS NVARCHAR(32)
@@ -132,12 +129,9 @@ BEGIN
 	return @hash
 END;
 GO
-
+/*--Teste da conversão da pass
 select SchemaUtilizador.funcPassToHash('password1')/*exemplo que o mais precisa-se no projeto*/
-
-IF OBJECT_ID (N'SchemaUtilizador.funcIdadeTens', N'TF') IS NOT NULL
-    DROP FUNCTION SchemaUtilizador.funcIdadeTens;
-GO
+*/
 --Calcular a idade a partir da data --/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcIdadeTens(@userId int)
 RETURNS int
@@ -159,12 +153,9 @@ BEGIN
 END
 GO
 
-
+/*--Teste da idade--
 select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
-
-
-IF OBJECT_ID (N'SchemaUtilizador.funcPassConfirm ', N'TF') IS NOT NULL
-    DROP FUNCTION  SchemaUtilizador.funcPassConfirm ;
+*/
 GO
 --Compara a pass do utilizador (usar em logins)--
 CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
@@ -172,7 +163,6 @@ RETURNS int
 AS
 BEGIN
 	DECLARE @returnVal Nvarchar(500)
-	--SET NOCOUNT ON  
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass))
   set @returnVal=1
@@ -181,6 +171,18 @@ BEGIN
 	return @returnVal
 END;
 Go
+--Procedimentos que Procedem--
+
+--Procedimento para registar o utilizador(Precisa ainda de uns retoques)--
+create proc SchemaUtilizador.procRegUser
+		(@username varchar(40), @password varchar(50), @email varchar(50),
+		@userDoB varchar(50),@userPhone varchar(50))
+as
+SET NOCOUNT ON
+Insert into SchemaUtilizador.Utilizador (UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone)
+		values (@username,SchemaUtilizador.funcpassToHash(@password),@email,@userDoB,GETDATE(),@userPhone)
+GO
+
 --Procedimento para colocar um produto à venda--
 
 Create proc SchemaProduto.procVenderProd
@@ -190,6 +192,7 @@ SET NOCOUNT ON
 Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
 		values (@ProdNome, @ProdDesc, @ProdDataLimite, @ProdValorMin)
 Go
+
 --Procedimento para licitar num produto--
 Create proc SchemaProduto.procLicitarProd
 			(@userid int, @prodid int, @licitaval int)
