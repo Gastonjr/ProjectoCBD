@@ -23,10 +23,7 @@ Create Schema SchemaUtilizador;
 Go
 Create Schema SchemaLicitacao;
 Go
-Create Schema SchemaSeguirProduto;
-Go
-Create Schema SchemaSeguidor;
-Go
+
 
 --Criação de coisas onde se metem outras coisas--
 Create table schemaUtilizador.Utilizador (
@@ -45,7 +42,7 @@ Create table schemaUtilizador.Utilizador (
 		check (UtilizadorTelefone like'[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')
 );
 
-Create table SchemaSeguidor.Seguidor (
+Create table SchemaUtilizador.Seguidor (
 	SeguidorTableId  int identity(1,1) not null,
 	SeguidorSeguidorID int not null,
 	SeguidorSeguidoID int not null
@@ -70,7 +67,7 @@ Create table SchemaLicitacao.Licitacao (
 	LicitacaoUtilizadorID int not null
 );
 
-Create table SchemaSeguirProduto.SeguirProduto (
+Create table SchemaUtilizador.SeguirProduto (
 	SeguirProdutoTableId int identity(1,1) not null,
 	SeguirProdutoProdutoId int not null,
 	SeguirProdutoUtilizadorID int not null
@@ -81,11 +78,11 @@ Go
 
 Alter table SchemaUtilizador.Utilizador add constraint pk_Utilizador primary key (UtilizadorId);
 
-Alter table SchemaSeguidor.Seguidor add constraint pk_Seguidor primary key (SeguidorTableId);
+Alter table SchemaUtilizador.Seguidor add constraint pk_Seguidor primary key (SeguidorTableId);
 
 Alter table SchemaProduto.Produto add constraint pk_Produto primary key (ProdutoId);
 
-Alter table SchemaSeguirProduto.SeguirProduto add constraint pk_SeguirProduto primary key (SeguirProdutoTableId);
+Alter table SchemaUtilizador.SeguirProduto add constraint pk_SeguirProduto primary key (SeguirProdutoTableId);
 
 Alter table SchemaLicitacao.Licitacao add constraint pk_Licitacao primary key (LicitacaoId);
 
@@ -96,16 +93,16 @@ Go
 Alter table SchemaProduto.Produto add constraint Produto_fk_Utilizador
             foreign key (ProdutoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId) on delete cascade;
 
-Alter table SchemaSeguidor.Seguidor add constraint Seguidor_fk_Utilizador
+Alter table SchemaUtilizador.Seguidor add constraint Seguidor_fk_Utilizador
             foreign key (SeguidorSeguidorID) references SchemaUtilizador.Utilizador(UtilizadorId);
 
-Alter table SchemaSeguidor.Seguidor add constraint Seguido_fk_Utilizador
+Alter table SchemaUtilizador.Seguidor add constraint Seguido_fk_Utilizador
             foreign key (SeguidorSeguidoID) references SchemaUtilizador.Utilizador(UtilizadorId);
 
-Alter table SchemaSeguirProduto.SeguirProduto add constraint SeguirProduto_fk_Produto
+Alter table SchemaUtilizador.SeguirProduto add constraint SeguirProduto_fk_Produto
             foreign key (SeguirProdutoProdutoID) references SchemaProduto.Produto(ProdutoId);
 
-Alter table SchemaSeguirProduto.SeguirProduto add constraint SeguirProduto_fk_Utilizador
+Alter table SchemaUtilizador.SeguirProduto add constraint SeguirProduto_fk_Utilizador
             foreign key (SeguirProdutoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId);
 
 Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Produto
@@ -236,5 +233,8 @@ Insert into SchemaUtilizador.procRegUser(UtilizadorNome, UtilizadorSenha, Utiliz
 								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 
 Go
+Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
+								values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965287167');										
+								Go
 
 
