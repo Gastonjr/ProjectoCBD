@@ -175,12 +175,31 @@ Go
 
 --Procedimento para registar o utilizador(Precisa ainda de uns retoques)--
 create proc SchemaUtilizador.procRegUser
-		(@username varchar(40), @password varchar(50), @email varchar(50),
-		@userDoB varchar(50),@userPhone varchar(50))
+		(@username varchar(40), @password varchar(32), @email varchar(255),
+		@userDoB varchar(50),@userPhone varchar(9))
 as
-SET NOCOUNT ON
-Insert into SchemaUtilizador.Utilizador (UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone)
-		values (@username,SchemaUtilizador.funcpassToHash(@password),@email,@userDoB,GETDATE(),@userPhone)
+BEGIN
+	declare @Hash varchar(32)
+	DECLARE @msgErro varchar(500)
+
+	if exists (select 1 from Utilizador where UtilizadorEmail=@email)
+	begin
+		set @msgErro = 'O utilizador já existe: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	set @Hash= SchemaUtilizador.funcPassToHash(@password)
+
+	insert into SchemaUtilizador.Utilizador(UtilizadorEmail,UtilizadorNome,[UtilizadorSenha],UtilizadorDataRegisto,UtilizadorDataNascimento,UtilizadorTelefone)
+							  values (@email,@username,@Hash,GETDATE(),@userDoB,@userPhone)
+
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
 GO
 
 --Procedimento para colocar um produto à venda--
@@ -209,19 +228,3 @@ Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, Utiliza
 Go
 
 
-/*--Inserção de dados  utilizador ou entâo podes gerar ods dados automatico.--
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Andre','palavra','palavra.p@io.at','1990-08-31','2014-10-12','927357544');
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Marcia','m09cia','marcia.cbd@gmail.com','1995-03-20','2009-06-30','222357654');
-								
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Neves','neves2015','neves_carvalho@hotmail.com','19-10-12','1991-10-12','919942285');										
-
-Insert into Schema1.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965288167');										
-								Go
-
-*/
