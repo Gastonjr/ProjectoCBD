@@ -205,6 +205,10 @@ BEGIN
 	end
 END
 GO
+--Teste do procedimento procRegUser--
+execute SchemaUtilizador.procRegUser N'Rui',N'Pass',N'mail@io.at',N'1991-10-12',N'919942285';
+
+Go
 
 --Procedimento para colocar um produto à venda--
 
@@ -228,11 +232,13 @@ BEGIN
 END
 Go
 
---Inserção de coisas para razões tal.--
-Insert into SchemaUtilizador.procRegUser(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
-								values('Rui','Pass','mail@io.at','1991-10-12','1991-10-12','919942285');
 
-Go
+
+
+--Select * from SchemaUtilizador.Utilizador
+--Go
+
+--Inserção de coisas para razões tal.--
 Insert into SchemaUtilizador.Utilizador(UtilizadorNome, UtilizadorSenha, UtilizadorEmail, UtilizadorDataNascimento, UtilizadorDataRegisto, UtilizadorTelefone) 
 								values('Bruno Almeida','am1234br','almeida.bruno@live.com','1988-11-11','1995-04-25','965287167');										
 								Go
