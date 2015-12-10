@@ -226,20 +226,13 @@ BEGIN
 	declare @userID int
 	DECLARE @msgErro varchar(500)
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
-	if @userID = Null
-	begin
-		set @msgErro = 'O utilizador não existe: ' + CONVERT(VARCHAR, @email)
-		RAISERROR(@msgErro,16,1) 
-		RETURN
-	end
+	
 	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
 	begin
-		set @msgErro = 'A password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
+		set @msgErro = 'O utilizador ou a password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-	
-	
 	Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda,ProdutoUtilizadorID )
 		values (@ProdNome, @ProdDesc, @ProdDataLimite, @ProdValorMin,@userID)
 END
@@ -259,7 +252,7 @@ BEGIN
 				values(@userid, @prodid,@licitaval)
 END
 Go
-
+--Teste do procedimento procLicitarProd--
 
 
 ---------------------------------------------------------------------------------------------
