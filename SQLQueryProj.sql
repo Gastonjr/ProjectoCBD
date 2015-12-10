@@ -250,6 +250,12 @@ BEGIN
 	Set nocount on
 	declare @userID int
 	DECLARE @msgErro varchar(500)
+	if datediff(s,getdate(),@ProdDataLimite)<0
+	begin
+		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @ProdDataLimite)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
 	
 	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
@@ -274,8 +280,18 @@ BEGIN
 	DECLARE @msgErro varchar(500)
 	Declare @valActual decimal(9,2)
 	Declare @userID int
+	Declare @prodDate datetime
 	Set nocount on
+	select @prodDate = ProdutoDataLimiteLeilao from SchemaProduto.Produto where @prodid=ProdutoId
+	if datediff(s,getdate(),@prodDate)<0
+	begin
+		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @prodDate)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
+	
 	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
 	begin
 		set @msgErro = 'O utilizador ou a password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
@@ -299,8 +315,8 @@ BEGIN
 		RETURN 
 	end
 
-	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
-				values(@userid, @prodid,@licitaval, @valActual)
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+				values(@userid, @prodid,@licitaval, @valActual,Getdate())
 END
 Go
 --Teste do procedimento procLicitarProd--
