@@ -128,11 +128,7 @@ END;
 GO
 
 
-select SchemaUtilizador.funcPassToHash('OAS53QMI5JS')/*exemplo que o mais precisa-se no projeto*/
-
-IF OBJECT_ID (N'SchemaUtilizador.funcIdadeTens', N'TF') IS NOT NULL
-    DROP FUNCTION SchemaUtilizador.funcIdadeTens;
-GO
+--select SchemaUtilizador.funcPassToHash('OAS53QMI5JS')/*exemplo que o mais precisa-se no projeto*/
 
 /*--Teste da conversão da pass
 select SchemaUtilizador.funcPassToHash('password1')/*exemplo que o mais precisa-se no projeto*/
