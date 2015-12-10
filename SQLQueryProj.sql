@@ -225,6 +225,12 @@ BEGIN
 	Set nocount on
 	declare @userID int
 	DECLARE @msgErro varchar(500)
+	if datediff(s,getdate(),@ProdDataLimite)<0
+	begin
+		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @ProdDataLimite)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
 	
 	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
