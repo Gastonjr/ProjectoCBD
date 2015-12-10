@@ -29,7 +29,7 @@ Go
 Create table schemaUtilizador.Utilizador (
 	UtilizadorId int identity(1,1) not null,
 	UtilizadorNome varchar(50),
-	UtilizadorSenha varchar(50),	
+	UtilizadorSenha varchar(32),	
 	UtilizadorEmail varchar(255)
 	constraint mail_constraint
 		check (UtilizadorEmail like '%@%.%') ,
@@ -219,10 +219,10 @@ GO
 
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), 
-			 @ProdValorMin int,@email varchar(255), @pass varchar(255))
+			 @ProdValorMin int,@email varchar(255), @pass varchar(32))
 as
-Set nocount on
 BEGIN
+	Set nocount on
 	declare @userID int
 	DECLARE @msgErro varchar(500)
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
@@ -243,11 +243,26 @@ Go
 
 --Procedimento para licitar num produto--
 Create proc SchemaLicitacao.procLicitarProd
-			(@userid int, @prodid int, @licitaval int)
+			(@email int,@pass varchar(32), @prodid int, @licitaval int)
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
+	Declare @valActual decimal(9,2)
+	Declare @userID int
 	Set nocount on
+	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
+	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
+	begin
+		set @msgErro = 'O utilizador ou a password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	if @licitaval< @valActual
+	begin
+	set @msgErro = 'A licitação é menor do que o valor actual:' + CONVERT(VARCHAR, @licitaval) +' '+ CONVERT(VARCHAR, @)
+		RAISERROR(@msgErro,16,1) 
+		RETURN 
+	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
 				values(@userid, @prodid,@licitaval)
 END
