@@ -162,9 +162,9 @@ BEGIN
 	DECLARE @returnVal Nvarchar(500)
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass))
-  set @returnVal=1
-  else
-  set @returnVal=0
+		set @returnVal=1
+	else
+		set @returnVal=0
 	return @returnVal
 END;
 Go
@@ -213,18 +213,28 @@ Go
 --Procedimento para colocar um produto à venda--
 
 Create proc SchemaProduto.procVenderProd
-			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), @ProdValorMin int,@email varchar(255))
+			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), 
+			 @ProdValorMin int,@email varchar(255), @pass varchar(255))
 as
 Set nocount on
 BEGIN
 	declare @userID int
+	DECLARE @msgErro varchar(500)
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
+	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
+	begin
+		set @msgErro = 'O utilizador não existe/Meteste a pass errada: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	
+	
 	Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda,ProdutoUtilizadorID )
 		values (@ProdNome, @ProdDesc, @ProdDataLimite, @ProdValorMin,@userID)
 END
 Go
 --Teste do procedimento procVenderProd--
-execute SchemaProduto.procVenderProd N'Assalto',N'Armado',N'2016-10-12',10,N'mail@io.at';
+execute SchemaProduto.procVenderProd N'Assalto',N'Armado',N'2016-10-12',10,N'mail@io.at',N'Pass';
 Go
 
 --Procedimento para licitar num produto--
@@ -232,6 +242,7 @@ Create proc SchemaLicitacao.procLicitarProd
 			(@userid int, @prodid int, @licitaval int)
 as
 BEGIN
+	DECLARE @msgErro varchar(500)
 	Set nocount on
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
 				values(@userid, @prodid,@licitaval)
