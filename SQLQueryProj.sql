@@ -257,14 +257,25 @@ BEGIN
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
+	--Procurar o valor da licitação actual de um produto.
+	if not exists (select MAX( LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID)
+	begin
+		select @valActual= ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
+	end
+	else 
+	begin
+		select @valActual = MAX(LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID
+	end
+
 	if @licitaval< @valActual
 	begin
-	set @msgErro = 'A licitação é menor do que o valor actual:' + CONVERT(VARCHAR, @licitaval) +' '+ CONVERT(VARCHAR, @)
+		set @msgErro = 'A licitação é menor do que o valor actual:' + CONVERT(VARCHAR, @licitaval) +'<'+ CONVERT(VARCHAR, @)
 		RAISERROR(@msgErro,16,1) 
 		RETURN 
 	end
-	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
-				values(@userid, @prodid,@licitaval)
+
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
+				values(@userid, @prodid,@licitaval, @valActual)
 END
 Go
 --Teste do procedimento procLicitarProd--
