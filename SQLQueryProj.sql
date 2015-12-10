@@ -35,7 +35,7 @@ Create table schemaUtilizador.Utilizador (
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto date,
 	UtilizadorDataNascimento date,
-	UtilizadorTelefone varchar(15)
+	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone
 		unique (UtilizadorTelefone )
 	constraint CK_Telelfone
@@ -61,8 +61,8 @@ Create table SchemaProduto.Produto (
 Create table SchemaLicitacao.Licitacao (
 	LicitacaoId int identity(1,1) not null,
 	LicitacaoData date,
-	LicitacaoValorMax decimal(9,2),
 	LicitacaoValorActual decimal(9,2),
+	LicitacaoValorMax decimal(9,2),
 	LicitacaoProdutoID int not null,
 	LicitacaoUtilizadorID int not null
 );
@@ -116,9 +116,6 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
 Go
 
 --Funções que devem funcionar.--
-IF OBJECT_ID (N'SchemaUtilizador.funcPassToHash', N'TF') IS NOT NULL
-    DROP FUNCTION SchemaUtilizador.funcPassToHash;
-GO
 --Converte a password para uma hash--/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcPassToHash (@pass NVARCHAR)
 RETURNS NVARCHAR(32)
@@ -130,11 +127,17 @@ BEGIN
 END;
 GO
 
+
 select SchemaUtilizador.funcPassToHash('OAS53QMI5JS')/*exemplo que o mais precisa-se no projeto*/
 
 IF OBJECT_ID (N'SchemaUtilizador.funcIdadeTens', N'TF') IS NOT NULL
     DROP FUNCTION SchemaUtilizador.funcIdadeTens;
 GO
+
+/*--Teste da conversão da pass
+select SchemaUtilizador.funcPassToHash('password1')/*exemplo que o mais precisa-se no projeto*/
+*/
+
 --Calcular a idade a partir da data --/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcIdadeTens(@userId int)
 RETURNS int
@@ -156,12 +159,9 @@ BEGIN
 END
 GO
 
-
+/*--Teste da idade--
 select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
-
-
-IF OBJECT_ID (N'SchemaUtilizador.funcPassConfirm ', N'TF') IS NOT NULL
-    DROP FUNCTION  SchemaUtilizador.funcPassConfirm ;
+*/
 GO
 --Compara a pass do utilizador (usar em logins)--
 CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
@@ -169,7 +169,6 @@ RETURNS int
 AS
 BEGIN
 	DECLARE @returnVal Nvarchar(500)
-	--SET NOCOUNT ON  
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass))
   set @returnVal=1
@@ -178,28 +177,75 @@ BEGIN
 	return @returnVal
 END;
 Go
+--Procedimentos que Procedem--
+
+--Procedimento para registar o utilizador(Precisa ainda de uns retoques)--
+create proc SchemaUtilizador.procRegUser
+		(@username varchar(40), @password varchar(32), @email varchar(255),
+		@userDoB varchar(50),@userPhone varchar(9))
+as
+BEGIN
+	declare @Hash varchar(32)
+	DECLARE @msgErro varchar(500)
+
+	if @email not like '%@%.%'
+	begin
+		set @msgErro = 'O Email é inválido: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	if exists (select 1 from Utilizador where UtilizadorEmail=@email)
+	begin
+		set @msgErro = 'O utilizador já existe: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	
+	set @Hash= SchemaUtilizador.funcPassToHash(@password)
+
+	insert into SchemaUtilizador.Utilizador(UtilizadorEmail,UtilizadorNome,[UtilizadorSenha],UtilizadorDataRegisto,UtilizadorDataNascimento,UtilizadorTelefone)
+							  values (@email,@username,@Hash,GETDATE(),@userDoB,@userPhone)
+
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
+--Teste do procedimento procRegUser--
+execute SchemaUtilizador.procRegUser N'Rui',N'Pass',N'mail@io.at',N'1991-10-12',N'919942285';
+
+Go
+
 --Procedimento para colocar um produto à venda--
 
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), @ProdValorMin int)
 as
-SET NOCOUNT ON
-Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
+BEGIN
+	Insert into SchemaProduto.Produto (ProdutoNome,ProdutoDescricao,  ProdutoDataLimiteLeilao, ProdutoValorMinVenda )
 		values (@ProdNome, @ProdDesc, @ProdDataLimite, @ProdValorMin)
+END
 Go
+
 --Procedimento para licitar num produto--
 Create proc SchemaProduto.procLicitarProd
 			(@userid int, @prodid int, @licitaval int)
 as
 SET NOCOUNT ON
-Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
-			values(@userid, @prodid,@licitaval)
+BEGIN
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax)
+				values(@userid, @prodid,@licitaval)
+END
 Go
 
 
-								
---Inserção de dados  utilizador e garedos de  forma automatica.--
 
+---------------------------------------------------------------------------------------------
+--Inserção de dados da tabela utilizador --
+---------------------------------------------------------------------------------------------
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Dolan Moore','yI1nsH3ojV6fLB5c','placerat.orci.lacus@maurisaliquam.co.uk','2016-01-18','1956-01-04','967132109');
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Myles Lowery','GG6opA4boD6ufR2h','Quisque.fringilla.euismod@Phasellus.org','2015-08-12','1956-07-14','941063393');
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Yolanda Bailey','wK0zLU5pVX2suD5t','sem@nonmassanon.ca','2016-01-31','1937-02-03','976457812');
@@ -220,10 +266,10 @@ INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[Util
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Yasir Albert','FJ4cqQ2mdA8kmZ2v','nec.cursus.a@Morbinequetellus.com','2015-12-15','1973-12-02','985213911');
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Uta Bell','lD6xiM5vtI3hBQ4a','lacus.Quisque@eliterat.edu','2015-04-20','1970-08-22','920805323');
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Josephine Alford','YN8sLG0juU6cMI8z','quam@vulputateposuerevulputate.org','2016-02-18','1982-03-19','968881126');
-
+---------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.Utilizador;
-
 --inserção de dados de seguidor---
+---------------------------------------------------------------------------------------------
 
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(3,13);
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(8,12);
@@ -245,10 +291,10 @@ INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) 
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(15,7);
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(16,15);
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(5,4);
-
+----------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.Seguidor;
-
 --inserção de dados do Produto--
+----------------------------------------------------------------------------------------------
 INSERT INTO SchemaProduto.Produto([ProdutoNome],ProdutoDescricao,[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Fusce Aliquet Magna Industries','dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas', 12.91,'2006-06-17',11);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],ProdutoDescricao,[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Magna Industries','Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque.',85.96,'2011-02-15',20);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Cursus In Hendrerit PC','id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus',39.45,'2013-05-21',19);
@@ -269,5 +315,63 @@ INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValor
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Pede Limited','Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu',84.06,'2011-03-09',17);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('At Iaculis Quis Company','ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat',28.63,'2007-02-25',6);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Malesuada Fames Foundation','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede.',47.06,'2005-11-26',10);
+------------------------------------------------------------------------------------------------------
+--select * from SchemaProduto.Produto;
+--inserção de dados da Licitação--
+------------------------------------------------------------------------------------------------------
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1991-11-05',3.54,0.10,8,17);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2008-01-08',9.18,3.88,6,18);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2007-05-07',6.61,9.31,6,3);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1991-03-15',5.24,9.33,11,9);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1990-03-06',9.55,8.68,18,16);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2007-12-14',8.15,5.25,1,16);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1990-07-10',8.86,9.69,17,17);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1998-04-02',0.82,3.41,14,11);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2002-09-01',5.73,3.60,19,4);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1997-12-09',1.56,5.59,12,2);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2015-01-02',8.3,5.37,19,18);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1999-08-18',0.20,6.89,3,6);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1998-01-18',2.21,3.40,19,20);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2009-03-23',3.85,9.22,2,10);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1997-07-16',5.48,2.09,10,9);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2004-06-02',6.18,9.78,5,5);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1996-08-30',7.50,9.88,20,6);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2001-01-02',1.22,5.04,2,17);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('1996-06-06',9.82,4.94,20,20);
+INSERT INTO SchemaLicitacao.Licitacao([LicitacaoData],[LicitacaoValorActual],[LicitacaoValorMax],[LicitacaoProdutoID],[LicitacaoUtilizadorID]) VALUES('2002-09-28',3.97,9.84,15,18);
+-----------------------------------------------------------------------------------------------------
+--select * from SchemaLicitacao.Licitacao
+--inserção de dados da tabela SeguirProduto----
+-----------------------------------------------------------------------------------------------------
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(9,9);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(20,16);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(10,3);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(14,3);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(13,15);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(15,16);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(16,11);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(10,6);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(11,6);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(19,4);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(6,17);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(6,15);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(7,17);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(5,12);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(2,6);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(8,18);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(10,15);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(17,20);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(18,19);
+INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(3,11);
+--------------------------------------------------------------------------------------------------------------
+--select * from SchemaUtilizador.SeguirProduto;
+--------------------------------------------------------------------------------------------------------------
 
-select * from SchemaProduto.Produto;
+
+								
+
+
+
+
+
+
