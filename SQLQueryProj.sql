@@ -179,7 +179,7 @@ END;
 Go
 --Procedimentos que Procedem--
 
---Procedimento para registar o utilizador(Precisa ainda de uns retoques)--
+--Procedimento para registar o utilizador--
 create proc SchemaUtilizador.procRegUser
 		(@username varchar(40), @password varchar(32), @email varchar(255),
 		@userDoB varchar(50),@userPhone varchar(9))
@@ -216,8 +216,8 @@ BEGIN
 END
 GO
 --Teste do procedimento procRegUser--
-execute SchemaUtilizador.procRegUser N'Rui',N'Pass',N'mail@io.at',N'1991-10-12',N'919942285';
-Go
+--execute SchemaUtilizador.procRegUser N'Rui',N'Pass',N'mail@io.at',N'1991-10-12',N'919942285';
+--Go
 
 --Procedimento para colocar um produto à venda--
 
@@ -230,9 +230,15 @@ BEGIN
 	declare @userID int
 	DECLARE @msgErro varchar(500)
 	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
+	if @userID = Null
+	begin
+		set @msgErro = 'O utilizador não existe: ' + CONVERT(VARCHAR, @email)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
 	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
 	begin
-		set @msgErro = 'O utilizador não existe/Meteste a pass errada: ' + CONVERT(VARCHAR, @email)
+		set @msgErro = 'A password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -243,8 +249,8 @@ BEGIN
 END
 Go
 --Teste do procedimento procVenderProd--
-execute SchemaProduto.procVenderProd N'Assalto',N'Armado',N'2016-10-12',10,N'mail@io.at',N'Pass';
-Go
+--execute SchemaProduto.procVenderProd N'Assalto',N'Armado',N'2016-10-12',10,N'mail@io.at',N'Pass';
+--Go
 
 --Procedimento para licitar num produto--
 Create proc SchemaLicitacao.procLicitarProd
