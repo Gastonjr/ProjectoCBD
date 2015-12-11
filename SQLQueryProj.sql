@@ -112,7 +112,7 @@ BEGIN
 	set ProdutoValorActual= @valor where ProdutoId=@produto
 	
 	update Licitacao
-	set Licitacao = @valor where LicitacaoId =@licitacao
+	set LicitacaoValorActual = @valor where LicitacaoId =@licitacao
 END
 Go
 
@@ -141,7 +141,7 @@ BEGIN
 			set ProdutoValorActual= @valor where ProdutoId=@produto
 			
 			update Licitacao
-			set Licitacao = @valor where LicitacaoId =@licitacao
+			set LicitacaoValorActual = @valor where LicitacaoId =@licitacao
 		end 
 	end
 	
@@ -449,7 +449,6 @@ INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValor
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('At Iaculis Quis Company','ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat',28.63,'2007-02-25',6);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Malesuada Fames Foundation','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede.',47.06,'2005-11-26',10);
 ------------------------------------------------------------------------------------------------------
-select * from SchemaProduto.Produto;
 --inserção de dados da Licitação--
 ------------------------------------------------------------------------------------------------------
 INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-03-20 01:43:30',731.53,20,5);
@@ -473,7 +472,6 @@ INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoP
 INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-02-28 08:23:54',128.23,8,6);
 INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-07-09 10:56:27',448.78,12,4);
 -----------------------------------------------------------------------------------------------------
---select * from SchemaLicitacao.Licitacao
 --inserção de dados da tabela SeguirProduto----
 -----------------------------------------------------------------------------------------------------
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(9,9);
@@ -499,9 +497,9 @@ INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdu
 --------------------------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.SeguirProduto;
 --------------------------------------------------------------------------------------------------------------
-
+select * from SchemaProduto.Produto;
 select * from SchemaLicitacao.Licitacao;
-								
+						
 
 
 
