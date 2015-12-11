@@ -31,7 +31,7 @@ Create table schemaUtilizador.Utilizador (
 	UtilizadorNome varchar(50),
 	UtilizadorSenha varchar(32),	
 	UtilizadorEmail varchar(255)
-	constraint mail_constraint
+	constraint CK_Email
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto date,
 	UtilizadorDataNascimento date,
@@ -119,19 +119,20 @@ ON SchemaProduto.Historico
 AFTER INSERT 
 AS
 BEGIN
-Declare @produto int
-Declare @licitacao int
-Declare @valor decimal
-Declare @valorNov decimal
-
-select  @valor=HistoricoValorLicitacao  from inserted
-
-select  @valorNov=LicitacaoValorActual, @produto=LicitacaoProdutoID,@licitacao=LicitacaoId from SchemaLicitacao.Licitacao, inserted where @valor<LicitacaoValorMax and LicitacaoId!=HistoricoLicitacaoID
-	insert into SchemaProduto.Historico(
-   
-   HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
-   
-   )values(@valor, GETDATE(),@produto,@licitacao)    
+	Declare @produto int
+	Declare @licitacao int
+	Declare @valor decimal
+	Declare @valorNov decimal
+	Declare @valorMax decimal
+	if exists (select 1 from SchemaLicitacao.Licitacao, inserted 
+		where HistoricoProdutoID=LicitacaoProdutoID and HistoricoLicitacaoID!=LicitacaoID )
+	Begin
+		select @valorMax=Max( LicitacaoValorMax ) from SchemaLicitacao.Licitacao, inserted where LicitacaoID != HistoricoLicitacaoID
+		
+	end
+	begin
+		select @valor=(ProdutoValorActual+0.01) from SchemaProduto.Produto where @produto=ProdutoId
+	end
  END
 Go
 
