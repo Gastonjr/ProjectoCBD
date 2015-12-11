@@ -53,6 +53,7 @@ Create table SchemaProduto.Produto (
 	ProdutoId int identity(1,1) not null, 
 	ProdutoNome varchar(50),
 	ProdutoDescricao varchar(255),
+	ProdutoValorActual decimal(9,2),
 	ProdutoValorMinVenda decimal(9,2),
 	ProdutoDataLimiteLeilao dateTime,
 	ProdutoUtilizadorID int not null
@@ -61,7 +62,7 @@ Create table SchemaProduto.Produto (
 Create table SchemaLicitacao.Licitacao (
 	LicitacaoId int identity(1,1) not null,
 	LicitacaoData dateTime,
-	--LicitacaoValorActual decimal(9,2),
+	LicitacaoValor decimal(9,2),
 	LicitacaoValorMax decimal(9,2),
 	LicitacaoProdutoID int not null,
 	LicitacaoUtilizadorID int not null
@@ -87,7 +88,7 @@ AFTER INSERT
 AS
    insert into SchemaProduto.Historico(
    
-   HistoricoValorLicitacao,HistoricoDataLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
+   HistoricoValorLicitacao,HistoricoDataCompetLicitacao ,HistoricoProdutoID, HistoricoLicitacaoID
    
    )values(2.90, '1991-11-05',4,4)    
 
@@ -299,13 +300,13 @@ BEGIN
 		RETURN
 	end
 	--Procurar o valor da licitação actual de um produto.
-	if not exists (select MAX( LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID)
+	if not exists (select MAX( LicitacaoValor) from Licitacao where @prodid=LicitacaoProdutoID)
 	begin
 		select @valActual= ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
 	end
 	else 
 	begin
-		select @valActual = MAX(LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID
+		select @valActual = MAX(LicitacaoValor) from Licitacao where @prodid=LicitacaoProdutoID
 	end
 
 	if @licitaval< @valActual
@@ -315,7 +316,7 @@ BEGIN
 		RETURN 
 	end
 
-	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValor,LicitacaoData)
 				values(@userid, @prodid,@licitaval, @valActual,Getdate())
 END
 Go
@@ -395,29 +396,29 @@ INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValor
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('At Iaculis Quis Company','ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat',28.63,'2007-02-25',6);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Malesuada Fames Foundation','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede.',47.06,'2005-11-26',10);
 ------------------------------------------------------------------------------------------------------
---select * from SchemaProduto.Produto;
+select * from SchemaProduto.Produto;
 --inserção de dados da Licitação--
 ------------------------------------------------------------------------------------------------------
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-03-20 01:43:30","731.53",20,5);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-12-24 22:44:08","479.25",12,6);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-12-14 17:06:05","201.77",12,17);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-10-04 20:15:13","168.33",11,16);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-10-24 19:36:56","989.54",3,16);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-05-14 12:57:26","601.38",13,4);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-03-07 20:47:13","796.29",17,1);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-12-05 05:17:05","128.09",20,2);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-09-03 11:45:30","401.75",14,18);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-10-24 06:32:58","343.47",5,12);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-05-10 02:31:59","390.62",17,1);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-05-19 17:34:05","186.72",10,14);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-04-05 07:15:32","478.55",1,20);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-02-05 22:45:12","990.14",10,10);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-05-24 10:56:20","671.19",9,2);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-06-06 11:03:01","457.90",1,16);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-09-01 22:07:25","835.87",20,12);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2018-11-10 06:59:35","588.96",19,6);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-02-28 08:23:54","128.23",8,6);
-INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ("2017-07-09 10:56:27","448.78",12,4);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-03-20 01:43:30',731.53,20,5);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-12-24 22:44:08',479.25,12,6);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-12-14 17:06:05',201.77,12,17);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-10-04 20:15:13',168.33,11,16);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-10-24 19:36:56',989.54,3,16);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-05-14 12:57:26',601.38,13,4);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-03-07 20:47:13',796.29,17,1);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-12-05 05:17:05',128.09,20,2);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-09-03 11:45:30',401.75,14,18);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-10-24 06:32:58',343.47,5,12);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-05-10 02:31:59',390.62 ,17,1);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-05-19 17:34:05',186.72,10,14);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-04-05 07:15:32',478.55,1,20);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-02-05 22:45:12',990.14,10,10);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-05-24 10:56:20',671.19,9,2);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-06-06 11:03:01',457.90,1,16);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-09-01 22:07:25',835.87,20,12);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2018-11-10 06:59:35',588.96,19,6);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-02-28 08:23:54',128.23,8,6);
+INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-07-09 10:56:27',448.78,12,4);
 -----------------------------------------------------------------------------------------------------
 --select * from SchemaLicitacao.Licitacao
 --inserção de dados da tabela SeguirProduto----
