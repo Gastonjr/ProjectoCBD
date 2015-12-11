@@ -165,6 +165,8 @@ Alter table SchemaUtilizador.SeguirProduto add constraint pk_SeguirProduto prima
 
 Alter table SchemaLicitacao.Licitacao add constraint pk_Licitacao primary key (LicitacaoId);
 
+Alter table SchemaProduto.Historico add constraint pk_Historico primary key (HistoricoID);
+
 Go
 
 --Adicionadas mais restrições porque restrições nunca são de mais ou as restrições de chaves estrangeiras--
@@ -189,6 +191,12 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Produto
 
 Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
             foreign key (LicitacaoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId) on delete cascade;
+
+Alter table SchemaProduto.Historico add constraint Historico_fk_Produto
+            foreign key (HistoricoProdutoID) references SchemaProduto.Produto(ProdutoId) ;
+
+Alter table SchemaProduto.Historico add constraint Historico_fk_Licitacao
+            foreign key (HistoricoLicitacaoID) references SchemaLicitacao.Licitacao(LicitacaoId) on delete cascade;
 
 
 
@@ -496,9 +504,10 @@ INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdu
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(3,11);
 --------------------------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.SeguirProduto;
+--select * from SchemaProduto.Produto;
+--select * from SchemaLicitacao.Licitacao;
 --------------------------------------------------------------------------------------------------------------
-select * from SchemaProduto.Produto;
-select * from SchemaLicitacao.Licitacao;
+
 						
 
 
