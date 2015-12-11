@@ -81,15 +81,21 @@ HistoricoLicitacaoID int not null,
 );
 Go 
 
+--Triggers que disparam--
 CREATE TRIGGER SchemaLicitacao.TrLicitacao
 ON SchemaLicitacao.Licitacao
 AFTER INSERT 
 AS
+Declare @data datetime
+Declare @produto int
+Declare @licitacao int
+Declare @valor decimal
+select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId from inserted
    insert into SchemaProduto.Historico(
    
-   HistoricoValorLicitacao,HistoricoDataLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
+   HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
    
-   )values(2.90, '1991-11-05',4,4)    
+   )values(@valor, @data,@produto,@licitacao)    
 
 Go
 
@@ -226,7 +232,7 @@ BEGIN
 	
 	set @Hash= SchemaUtilizador.funcPassToHash(@password)
 
-	insert into SchemaUtilizador.Utilizador(UtilizadorEmail,UtilizadorNome,[UtilizadorSenha],UtilizadorDataRegisto,UtilizadorDataNascimento,UtilizadorTelefone)
+	insert into SchemaUtilizador.Utilizador(UtilizadorEmail,UtilizadorNome,UtilizadorSenha,UtilizadorDataRegisto,UtilizadorDataNascimento,UtilizadorTelefone)
 							  values (@email,@username,@Hash,GETDATE(),@userDoB,@userPhone)
 
 	if @@ERROR <>0
