@@ -61,7 +61,7 @@ Create table SchemaProduto.Produto (
 Create table SchemaLicitacao.Licitacao (
 	LicitacaoId int identity(1,1) not null,
 	LicitacaoData dateTime,
-	--LicitacaoValorActual decimal(9,2),
+	LicitacaoValorActual decimal(9,2),
 	LicitacaoValorMax decimal(9,2),
 	LicitacaoProdutoID int not null,
 	LicitacaoUtilizadorID int not null
@@ -90,7 +90,7 @@ Declare @data datetime
 Declare @produto int
 Declare @licitacao int
 Declare @valor decimal
-select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId from inserted
+select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual from inserted
    insert into SchemaProduto.Historico(
    
    HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
@@ -99,6 +99,25 @@ select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId
 
 Go
 
+CREATE TRIGGER SchemaProduto.TrHistorico
+ON SchemaProduto.Historico
+AFTER INSERT 
+AS
+BEGIN
+Declare @data datetime
+Declare @produto int
+Declare @licitacao int
+Declare @valor decimal
+Declare @valorNov decimal
+select  @valor=HistoricoValorLicitacao  from inserted
+select  @valorNov=LicitacaoValorActual from SchemaLicitacao.Licitacao, inserted where @valor<LicitacaoValorMax and LicitacaoId!=HistoricoLicitacaoID
+insert into SchemaProduto.Historico(
+   
+   HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
+   
+   )values(@valor, @data,@produto,@licitacao)    
+ END
+Go
 
 
 
