@@ -91,11 +91,27 @@ Declare @data datetime
 Declare @produto int
 Declare @licitacao int
 Declare @valor decimal
-select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual from inserted
+BEGIN
+	select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual from inserted
+	if @valor is null
+	Begin
+		if exists (select 1 from SchemaProduto.Historico where @produto=HistoricoProdutoID)
+		begin
+			select @valor=(ProdutoValorActual+0.01) from SchemaProduto.Produto where @produto=ProdutoId
+		end
+		else
+		begin
+			select @valor=ProdutoValorActual from SchemaProduto.Produto where @produto=ProdutoId
+		end
+   End
    insert into SchemaProduto.Historico(
    HistoricoValorLicitacao,HistoricoDataCompetLicitacao ,HistoricoProdutoID, HistoricoLicitacaoID
-   )values(@valor, @data,@produto,@licitacao)    
+   )values(@valor, getdate(),@produto,@licitacao)
 
+	update SchemaProduto.Produto(ProdutoValorActual) 
+	set ProdutoValorActual= @valor where ProdutoId=@produto
+
+END
 Go
 
 CREATE TRIGGER SchemaProduto.TrHistorico
@@ -103,18 +119,19 @@ ON SchemaProduto.Historico
 AFTER INSERT 
 AS
 BEGIN
-Declare @data datetime
 Declare @produto int
 Declare @licitacao int
 Declare @valor decimal
 Declare @valorNov decimal
+
 select  @valor=HistoricoValorLicitacao  from inserted
-select  @valorNov=LicitacaoValorActual from SchemaLicitacao.Licitacao, inserted where @valor<LicitacaoValorMax and LicitacaoId!=HistoricoLicitacaoID
-insert into SchemaProduto.Historico(
+
+select  @valorNov=LicitacaoValorActual, @produto=LicitacaoProdutoID,@licitacao=LicitacaoId from SchemaLicitacao.Licitacao, inserted where @valor<LicitacaoValorMax and LicitacaoId!=HistoricoLicitacaoID
+	insert into SchemaProduto.Historico(
    
    HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
    
-   )values(@valor, @data,@produto,@licitacao)    
+   )values(@valor, GETDATE(),@produto,@licitacao)    
  END
 Go
 
@@ -123,7 +140,7 @@ Go
 
 
 
---Adicionadas restrições às coisas para não se armarem em espertas ou restrições de chaves primarias--
+Adicionadas restrições às coisas para não se armarem em espertas ou restrições de chaves primarias--
 
 Alter table SchemaUtilizador.Utilizador add constraint pk_Utilizador primary key (UtilizadorId);
 
@@ -323,13 +340,13 @@ BEGIN
 		RETURN
 	end
 	--Procurar o valor da licitação actual de um produto.
-	if not exists (select MAX( LicitacaoValor) from Licitacao where @prodid=LicitacaoProdutoID)
+	if not exists (select MAX( LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID)
 	begin
 		select @valActual= ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
 	end
 	else 
 	begin
-		select @valActual = MAX(LicitacaoValor) from Licitacao where @prodid=LicitacaoProdutoID
+		select @valActual = MAX(LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID
 	end
 
 	if @licitaval< @valActual
@@ -339,7 +356,7 @@ BEGIN
 		RETURN 
 	end
 
-	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValor,LicitacaoData)
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 				values(@userid, @prodid,@licitaval, @valActual,Getdate())
 END
 Go
