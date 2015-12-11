@@ -108,9 +108,11 @@ BEGIN
    HistoricoValorLicitacao,HistoricoDataCompetLicitacao ,HistoricoProdutoID, HistoricoLicitacaoID
    )values(@valor, getdate(),@produto,@licitacao)
 
-	update SchemaProduto.Produto(ProdutoValorActual) 
+	update SchemaProduto.Produto
 	set ProdutoValorActual= @valor where ProdutoId=@produto
-
+	
+	update Licitacao
+	set Licitacao = @valor where LicitacaoId =@licitacao
 END
 Go
 
@@ -128,11 +130,21 @@ BEGIN
 		where HistoricoProdutoID=LicitacaoProdutoID and HistoricoLicitacaoID!=LicitacaoID )
 	Begin
 		select @valorMax=Max( LicitacaoValorMax ) from SchemaLicitacao.Licitacao, inserted where LicitacaoID != HistoricoLicitacaoID
-		
+		select @licitacao=LicitacaoId from SchemaLicitacao.Licitacao where LicitacaoValorMax=@valorMax
+		select @valor=(HistoricoValorLicitacao+0.01), @produto=HistoricoProdutoID from inserted
+		if @valor<=@valorMax
+		begin
+			insert into SchemaProduto.Historico(
+				HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
+				)values(@valor, GETDATE(), @produto,@licitacao)
+			update SchemaProduto.Produto
+			set ProdutoValorActual= @valor where ProdutoId=@produto
+			
+			update Licitacao
+			set Licitacao = @valor where LicitacaoId =@licitacao
+		end 
 	end
-	begin
-		select @valor=(ProdutoValorActual+0.01) from SchemaProduto.Produto where @produto=ProdutoId
-	end
+	
  END
 Go
 
@@ -141,7 +153,7 @@ Go
 
 
 
-Adicionadas restrições às coisas para não se armarem em espertas ou restrições de chaves primarias--
+--Adicionadas restrições às coisas para não se armarem em espertas ou restrições de chaves primarias--
 
 Alter table SchemaUtilizador.Utilizador add constraint pk_Utilizador primary key (UtilizadorId);
 
