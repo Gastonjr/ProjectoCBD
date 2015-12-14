@@ -203,7 +203,7 @@ Alter table SchemaProduto.Historico add constraint Historico_fk_Licitacao
 Go
 
 --Funções que devem funcionar.--
---Converte a password para uma hash--/* sofreu a alteração na aula de Lab*/
+--Converte a password para uma hash--
 CREATE FUNCTION SchemaUtilizador.funcPassToHash (@pass NVARCHAR)
 RETURNS NVARCHAR(32)
 AS
@@ -244,14 +244,14 @@ GO
 
 --Teste da idade--
 --select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
+--GO
 
-GO
 --Compara a password do utilizador (usar em logins)--
 CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
 RETURNS int
 AS
 BEGIN
-	DECLARE @returnVal Nvarchar(500)
+	DECLARE @returnVal int
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
 	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass)) /*compara a pass guardada do utilizador e a que foi inserida */
 		set @returnVal=1
@@ -260,6 +260,15 @@ BEGIN
 	return @returnVal
 END;
 Go
+
+--Compara 2 valores e devolve a diferença
+Create FUNCTION SchemaLicitacao.funcCompValor(@valor1 decimal,@valor2 decimal)
+returns decimal
+as
+BEGIN
+	DECLARE @returnVal decimal
+END
+Go 
 --Procedimentos que Procedem--
 --Procedimento para registar o utilizador--
 create proc SchemaUtilizador.procRegUser
