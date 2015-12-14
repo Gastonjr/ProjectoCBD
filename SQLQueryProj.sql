@@ -266,7 +266,9 @@ Create FUNCTION SchemaLicitacao.funcCompValor(@valor1 decimal,@valor2 decimal)
 returns decimal
 as
 BEGIN
-	DECLARE @returnVal decimal
+	DECLARE @returnVal decimal(9,2)
+	set @returnVal =(@valor1-@valor2)
+	return @returnVal
 END
 Go 
 --Procedimentos que Procedem--
