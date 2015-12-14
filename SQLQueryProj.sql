@@ -242,18 +242,18 @@ BEGIN
 END
 GO
 
-/*--Teste da idade--
-select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
-*/
+--Teste da idade--
+--select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
+
 GO
---Compara a pass do utilizador (usar em logins)--
+--Compara a password do utilizador (usar em logins)--
 CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
 RETURNS int
 AS
 BEGIN
 	DECLARE @returnVal Nvarchar(500)
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
-	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass))
+	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass)) /*compara a pass guardada do utilizador e a que foi inserida */
 		set @returnVal=1
 	else
 		set @returnVal=0
@@ -261,25 +261,24 @@ BEGIN
 END;
 Go
 --Procedimentos que Procedem--
-
 --Procedimento para registar o utilizador--
 create proc SchemaUtilizador.procRegUser
 		(@username varchar(40), @password varchar(32), @email varchar(255),
 		@userDoB varchar(50),@userPhone varchar(9))
 as
 BEGIN
-	Set nocount on
+Set nocount on/*não conta as linhas que foram afeitadas, sempre	que alterar e inserir*/
 	declare @Hash varchar(32)
 	DECLARE @msgErro varchar(500)
 
-	if @email not like '%@%.%'
+	if @email not like '%@%.%' /*verifica se o email está com a forma correcta*/
 	begin
 		set @msgErro = 'O Email é inválido: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-	if exists (select 1 from Utilizador where UtilizadorEmail=@email)
+	if exists (select 1 from Utilizador where UtilizadorEmail=@email)/*verifica se existe o Email , e enviar a mensagem de erro  */
 	begin
 		set @msgErro = 'O utilizador já existe: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
@@ -306,13 +305,13 @@ GO
 
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), 
-			 @ProdValorMin int,@email varchar(255), @pass varchar(32))
+			 @ProdValorMin int,@email varchar(255), @pass varchar(32))/*verifica se utilizador está autenticado ou login*/
 as
 BEGIN
 	Set nocount on
 	declare @userID int
 	DECLARE @msgErro varchar(500)
-	if datediff(s,getdate(),@ProdDataLimite)<0
+	if datediff(s,getdate(),@ProdDataLimite)<0/*verifica se já passou o ultimo segundo do leilão*/
 	begin
 		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @ProdDataLimite)
 		RAISERROR(@msgErro,16,1) 
@@ -331,7 +330,8 @@ BEGIN
 END
 Go
 --Teste do procedimento procVenderProd--
---execute SchemaProduto.procVenderProd N'Assalto',N'Armado',N'2016-10-12',10,N'mail@io.at',N'Pass';
+--execute SchemaProduto.procVenderProd N'cebola',N'Faz chorar',N'2016-10-12',10,N'mail@io.at',N'Pass';
+--select * from SchemaProduto.Produto where ProdutoNome='cebola'
 --Go
 
 --Procedimento para licitar num produto--
