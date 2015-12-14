@@ -31,7 +31,7 @@ Create table schemaUtilizador.Utilizador (
 	UtilizadorNome varchar(50),
 	UtilizadorSenha varchar(32),	
 	UtilizadorEmail varchar(255)
-	constraint mail_constraint
+	constraint CK_Email
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto date,
 	UtilizadorDataNascimento date,
@@ -91,11 +91,29 @@ Declare @data datetime
 Declare @produto int
 Declare @licitacao int
 Declare @valor decimal
-select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual from inserted
+BEGIN
+	select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual from inserted
+	if @valor is null
+	Begin
+		if exists (select 1 from SchemaProduto.Historico where @produto=HistoricoProdutoID)
+		begin
+			select @valor=(ProdutoValorActual+0.01) from SchemaProduto.Produto where @produto=ProdutoId
+		end
+		else
+		begin
+			select @valor=ProdutoValorActual from SchemaProduto.Produto where @produto=ProdutoId
+		end
+   End
    insert into SchemaProduto.Historico(
    HistoricoValorLicitacao,HistoricoDataCompetLicitacao ,HistoricoProdutoID, HistoricoLicitacaoID
-   )values(@valor, @data,@produto,@licitacao)    
+   )values(@valor, getdate(),@produto,@licitacao)
 
+	update SchemaProduto.Produto
+	set ProdutoValorActual= @valor where ProdutoId=@produto
+	
+	update Licitacao
+	set LicitacaoValorActual = @valor where LicitacaoId =@licitacao
+END
 Go
 
 CREATE TRIGGER SchemaProduto.TrHistorico
@@ -103,18 +121,30 @@ ON SchemaProduto.Historico
 AFTER INSERT 
 AS
 BEGIN
-Declare @data datetime
-Declare @produto int
-Declare @licitacao int
-Declare @valor decimal
-Declare @valorNov decimal
-select  @valor=HistoricoValorLicitacao  from inserted
-select  @valorNov=LicitacaoValorActual from SchemaLicitacao.Licitacao, inserted where @valor<LicitacaoValorMax and LicitacaoId!=HistoricoLicitacaoID
-insert into SchemaProduto.Historico(
-   
-   HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
-   
-   )values(@valor, @data,@produto,@licitacao)    
+	Declare @produto int
+	Declare @licitacao int
+	Declare @valor decimal
+	Declare @valorNov decimal
+	Declare @valorMax decimal
+	if exists (select 1 from SchemaLicitacao.Licitacao, inserted 
+		where HistoricoProdutoID=LicitacaoProdutoID and HistoricoLicitacaoID!=LicitacaoID )
+	Begin
+		select @valorMax=Max( LicitacaoValorMax ) from SchemaLicitacao.Licitacao, inserted where LicitacaoID != HistoricoLicitacaoID
+		select @licitacao=LicitacaoId from SchemaLicitacao.Licitacao where LicitacaoValorMax=@valorMax
+		select @valor=(HistoricoValorLicitacao+0.01), @produto=HistoricoProdutoID from inserted
+		if @valor<=@valorMax
+		begin
+			insert into SchemaProduto.Historico(
+				HistoricoValorLicitacao,HistoricoDataCompetLicitacao,HistoricoProdutoID, HistoricoLicitacaoID
+				)values(@valor, GETDATE(), @produto,@licitacao)
+			update SchemaProduto.Produto
+			set ProdutoValorActual= @valor where ProdutoId=@produto
+			
+			update Licitacao
+			set LicitacaoValorActual = @valor where LicitacaoId =@licitacao
+		end 
+	end
+	
  END
 Go
 
@@ -134,6 +164,8 @@ Alter table SchemaProduto.Produto add constraint pk_Produto primary key (Produto
 Alter table SchemaUtilizador.SeguirProduto add constraint pk_SeguirProduto primary key (SeguirProdutoTableId);
 
 Alter table SchemaLicitacao.Licitacao add constraint pk_Licitacao primary key (LicitacaoId);
+
+Alter table SchemaProduto.Historico add constraint pk_Historico primary key (HistoricoID);
 
 Go
 
@@ -159,6 +191,12 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Produto
 
 Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
             foreign key (LicitacaoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId) on delete cascade;
+
+Alter table SchemaProduto.Historico add constraint Historico_fk_Produto
+            foreign key (HistoricoProdutoID) references SchemaProduto.Produto(ProdutoId) ;
+
+Alter table SchemaProduto.Historico add constraint Historico_fk_Licitacao
+            foreign key (HistoricoLicitacaoID) references SchemaLicitacao.Licitacao(LicitacaoId) on delete cascade;
 
 
 
@@ -204,18 +242,18 @@ BEGIN
 END
 GO
 
-/*--Teste da idade--
-select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
-*/
+--Teste da idade--
+--select u.UtilizadorNome, u.UtilizadorDataNascimento, SchemaUtilizador.funcIdadeTens(u.UtilizadorId) as Idade  from SchemaUtilizador.Utilizador u 
+
 GO
---Compara a pass do utilizador (usar em logins)--
+--Compara a password do utilizador (usar em logins)--
 CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
 RETURNS int
 AS
 BEGIN
 	DECLARE @returnVal Nvarchar(500)
 	if exists(select UtilizadorId, UtilizadorSenha from SchemaUtilizador.Utilizador 
-	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass))
+	where UtilizadorId=@user and UtilizadorSenha= SchemaUtilizador.funcPassToHash(@pass)) /*compara a pass guardada do utilizador e a que foi inserida */
 		set @returnVal=1
 	else
 		set @returnVal=0
@@ -223,25 +261,24 @@ BEGIN
 END;
 Go
 --Procedimentos que Procedem--
-
 --Procedimento para registar o utilizador--
 create proc SchemaUtilizador.procRegUser
 		(@username varchar(40), @password varchar(32), @email varchar(255),
 		@userDoB varchar(50),@userPhone varchar(9))
 as
 BEGIN
-	Set nocount on
+Set nocount on/*não conta as linhas que foram afeitadas, sempre	que alterar e inserir*/
 	declare @Hash varchar(32)
 	DECLARE @msgErro varchar(500)
 
-	if @email not like '%@%.%'
+	if @email not like '%@%.%' /*verifica se o email está com a forma correcta*/
 	begin
 		set @msgErro = 'O Email é inválido: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-	if exists (select 1 from Utilizador where UtilizadorEmail=@email)
+	if exists (select 1 from Utilizador where UtilizadorEmail=@email)/*verifica se existe o Email , e enviar a mensagem de erro  */
 	begin
 		set @msgErro = 'O utilizador já existe: ' + CONVERT(VARCHAR, @email)
 		RAISERROR(@msgErro,16,1) 
@@ -268,13 +305,13 @@ GO
 
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), 
-			 @ProdValorMin int,@email varchar(255), @pass varchar(32))
+			 @ProdValorMin int,@email varchar(255), @pass varchar(32))/*verifica se utilizador está autenticado ou login*/
 as
 BEGIN
 	Set nocount on
 	declare @userID int
 	DECLARE @msgErro varchar(500)
-	if datediff(s,getdate(),@ProdDataLimite)<0
+	if datediff(s,getdate(),@ProdDataLimite)<0/*verifica se já passou o ultimo segundo do leilão*/
 	begin
 		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @ProdDataLimite)
 		RAISERROR(@msgErro,16,1) 
@@ -293,7 +330,8 @@ BEGIN
 END
 Go
 --Teste do procedimento procVenderProd--
---execute SchemaProduto.procVenderProd N'Assalto',N'Armado',N'2016-10-12',10,N'mail@io.at',N'Pass';
+--execute SchemaProduto.procVenderProd N'cebola',N'Faz chorar',N'2016-10-12',10,N'mail@io.at',N'Pass';
+--select * from SchemaProduto.Produto where ProdutoNome='cebola'
 --Go
 
 --Procedimento para licitar num produto--
@@ -323,13 +361,13 @@ BEGIN
 		RETURN
 	end
 	--Procurar o valor da licitação actual de um produto.
-	if not exists (select MAX( LicitacaoValor) from Licitacao where @prodid=LicitacaoProdutoID)
+	if not exists (select MAX( LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID)
 	begin
 		select @valActual= ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
 	end
 	else 
 	begin
-		select @valActual = MAX(LicitacaoValor) from Licitacao where @prodid=LicitacaoProdutoID
+		select @valActual = MAX(LicitacaoValorActual) from Licitacao where @prodid=LicitacaoProdutoID
 	end
 
 	if @licitaval< @valActual
@@ -339,7 +377,7 @@ BEGIN
 		RETURN 
 	end
 
-	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValor,LicitacaoData)
+	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 				values(@userid, @prodid,@licitaval, @valActual,Getdate())
 END
 Go
@@ -419,7 +457,6 @@ INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValor
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('At Iaculis Quis Company','ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat',28.63,'2007-02-25',6);
 INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Malesuada Fames Foundation','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede.',47.06,'2005-11-26',10);
 ------------------------------------------------------------------------------------------------------
-select * from SchemaProduto.Produto;
 --inserção de dados da Licitação--
 ------------------------------------------------------------------------------------------------------
 INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-03-20 01:43:30',731.53,20,5);
@@ -443,7 +480,6 @@ INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoP
 INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-02-28 08:23:54',128.23,8,6);
 INSERT INTO SchemaLicitacao.Licitacao(LicitacaoData,LicitacaoValorMax,LicitacaoProdutoID,LicitacaoUtilizadorID) VALUES ('2017-07-09 10:56:27',448.78,12,4);
 -----------------------------------------------------------------------------------------------------
---select * from SchemaLicitacao.Licitacao
 --inserção de dados da tabela SeguirProduto----
 -----------------------------------------------------------------------------------------------------
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(9,9);
@@ -468,10 +504,11 @@ INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdu
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(3,11);
 --------------------------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.SeguirProduto;
+--select * from SchemaProduto.Produto;
+--select * from SchemaLicitacao.Licitacao;
 --------------------------------------------------------------------------------------------------------------
 
-select * from SchemaLicitacao.Licitacao;
-								
+						
 
 
 
