@@ -74,27 +74,24 @@ Go
 
 --Procedimento para licitar num produto--
 Create proc SchemaLicitacao.procLicitarProd
-			(@email varchar(255),@pass varchar(32), @prodid int, @licitaval int)
+			(@userID int, @prodid int, @licitaval int)
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
 	Declare @valActual decimal(9,2)
-	Declare @userID int
 	Declare @prodDate datetime
 	Set nocount on
 	select @prodDate = ProdutoDataLimiteLeilao from SchemaProduto.Produto where @prodid=ProdutoId
 	if datediff(s,getdate(),@prodDate)<0
 	begin
-		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @prodDate)
+		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
-	
-	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
+	if exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@userID)
 	begin
-		set @msgErro = 'O utilizador ou a password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
+		set @msgErro = 'O utilizador não se encontra nos registos.'
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -110,7 +107,7 @@ BEGIN
 
 	if @licitaval< @valActual
 	begin
-		set @msgErro = 'A licitação é menor do que o valor actual:' + CONVERT(VARCHAR, @licitaval) +'<'+ CONVERT(VARCHAR, @valActual)
+		set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @licitaval) +' < '+ CONVERT(VARCHAR, @valActual)
 		RAISERROR(@msgErro,16,1) 
 		RETURN 
 	end
