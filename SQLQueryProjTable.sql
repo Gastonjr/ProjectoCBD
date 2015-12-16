@@ -73,10 +73,9 @@ Create table SchemaUtilizador.SeguirProduto (
 	SeguirProdutoProdutoId int not null,
 	SeguirProdutoUtilizadorID int not null
 );
-Go
-Create table SchemaProduto.Compra(
+
+Create table SchemaUtilizador.Compra(
 	CompraId int identity(1,1) not null,
-	CompraValorfinal decimal(9,2),
 	CompraClassificacao decimal(9,2),
 	CompraLicitacaoID int not null,
 	CompraProdutoID int not null
@@ -97,7 +96,7 @@ Alter table SchemaUtilizador.SeguirProduto add constraint pk_SeguirProduto prima
 
 Alter table SchemaLicitacao.Licitacao add constraint pk_Licitacao primary key (LicitacaoId);
 
-Alter table SchemaProduto.Compra add constraint pk_Compra primary key (CompraId);
+Alter table SchemaUtilizador.Compra add constraint pk_Compra primary key (CompraId);
 Go
 
 --Adicionadas mais restrições porque restrições nunca são de mais ou as restrições de chaves estrangeiras--
@@ -123,14 +122,11 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Produto
 Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
             foreign key (LicitacaoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId) on delete cascade;
 
-Alter table SchemaProduto.Compra add constraint Compra_fk_Produto
+Alter table SchemaUtilizador.Compra add constraint Compra_fk_Produto
             foreign key (CompraProdutoID ) references SchemaProduto.Produto(ProdutoId) ;
 
-Alter table SchemaProduto.Compra  add constraint Compra_fk_Licitacao
+Alter table SchemaUtilizador.Compra  add constraint Compra_fk_Licitacao
             foreign key (CompraLicitacaoID) references SchemaLicitacao.Licitacao(LicitacaoId) on delete cascade;
-
-
-
 Go
 
 
