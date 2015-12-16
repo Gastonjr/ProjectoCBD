@@ -74,12 +74,13 @@ Create table SchemaUtilizador.SeguirProduto (
 	SeguirProdutoUtilizadorID int not null
 );
 Go
-create table SchemaProduto.Historico(HistoricoID int identity(1,1) not null, 
-HistoricoValorLicitacao decimal(9,2),
-HistoricoDataCompetLicitacao  dateTime,
-HistoricoProdutoID int not null,
-HistoricoLicitacaoID int not null,
+Create table SchemaProduto.Compra(CompraId int identity(1,1) not null,
+CompraValorfinal decimal(9,2),
+CompraClassificacao decimal(9,2),
+CompraLicitacaoID int not null,
+CompraProdutoID int not null
 );
+
 Go 
 
 
@@ -95,8 +96,7 @@ Alter table SchemaUtilizador.SeguirProduto add constraint pk_SeguirProduto prima
 
 Alter table SchemaLicitacao.Licitacao add constraint pk_Licitacao primary key (LicitacaoId);
 
-Alter table SchemaProduto.Historico add constraint pk_Historico primary key (HistoricoID);
-
+Alter table SchemaProduto.Compra add constraint pk_Compra primary key (CompraId);
 Go
 
 --Adicionadas mais restrições porque restrições nunca são de mais ou as restrições de chaves estrangeiras--
@@ -122,11 +122,11 @@ Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Produto
 Alter table SchemaLicitacao.Licitacao add constraint Licitacao_fk_Utilizador
             foreign key (LicitacaoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId) on delete cascade;
 
-Alter table SchemaProduto.Historico add constraint Historico_fk_Produto
-            foreign key (HistoricoProdutoID) references SchemaProduto.Produto(ProdutoId) ;
+Alter table SchemaProduto.Compra add constraint Compra_fk_Produto
+            foreign key (CompraProdutoID ) references SchemaProduto.Produto(ProdutoId) ;
 
-Alter table SchemaProduto.Historico add constraint Historico_fk_Licitacao
-            foreign key (HistoricoLicitacaoID) references SchemaLicitacao.Licitacao(LicitacaoId) on delete cascade;
+Alter table SchemaProduto.Compra  add constraint Compra_fk_Licitacao
+            foreign key (CompraLicitacaoID) references SchemaLicitacao.Licitacao(LicitacaoId) on delete cascade;
 
 
 
