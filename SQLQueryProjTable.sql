@@ -26,7 +26,7 @@ Go
 
 
 --Criação de coisas onde se metem outras coisas--
-Create table schemaUtilizador.Utilizador (
+Create table SchemaUtilizador.Utilizador (
 	UtilizadorId int identity(1,1) not null,
 	UtilizadorNome varchar(50),
 	UtilizadorSenha varchar(32),	
