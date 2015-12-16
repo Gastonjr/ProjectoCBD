@@ -1,3 +1,6 @@
+Use CBDLeiloes
+Go
+
 --Procedimentos que Procedem--
 --Procedimento para registar o utilizador--
 create proc SchemaUtilizador.procRegUser

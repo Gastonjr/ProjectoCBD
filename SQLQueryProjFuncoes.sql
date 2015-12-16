@@ -1,3 +1,6 @@
+Use CBDLeiloes
+Go
+
 --Funções que devem funcionar.--
 --Converte a password para uma hash--
 CREATE FUNCTION SchemaUtilizador.funcPassToHash (@pass NVARCHAR)

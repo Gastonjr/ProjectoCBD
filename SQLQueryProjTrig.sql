@@ -1,3 +1,6 @@
+Use CBDLeiloes
+Go
+
 --Triggers que disparam--
 CREATE TRIGGER SchemaLicitacao.TrLicitacao
 ON SchemaLicitacao.Licitacao
