@@ -43,11 +43,10 @@ GO
 
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), 
-			 @ProdValorMin int,@email varchar(255), @pass varchar(32))/*verifica se utilizador está autenticado ou login*/
+			 @ProdValorMin int,@userID int)/*verifica se utilizador está autenticado ou login*/
 as
 BEGIN
 	Set nocount on
-	declare @userID int
 	DECLARE @msgErro varchar(500)
 	if datediff(s,getdate(),@ProdDataLimite)<0/*verifica se já passou o ultimo segundo do leilão*/
 	begin
@@ -55,11 +54,9 @@ BEGIN
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-	Select @userID=UtilizadorId from SchemaUtilizador.Utilizador where @email=UtilizadorEmail
-	
-	if SchemaUtilizador.funcPassConfirm(@userID,@pass)=0
-	begin
-		set @msgErro = 'O utilizador ou a password está errada certifica se o email está correcto: ' + CONVERT(VARCHAR, @email)
+	if exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@userID)
+	Begin
+		set @msgErro = 'O utilizador não se encontra nos registos. '
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
