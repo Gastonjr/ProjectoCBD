@@ -74,11 +74,12 @@ Create table SchemaUtilizador.SeguirProduto (
 	SeguirProdutoUtilizadorID int not null
 );
 Go
-Create table SchemaProduto.Compra(CompraId int identity(1,1) not null,
-CompraValorfinal decimal(9,2),
-CompraClassificacao decimal(9,2),
-CompraLicitacaoID int not null,
-CompraProdutoID int not null
+Create table SchemaProduto.Compra(
+	CompraId int identity(1,1) not null,
+	CompraValorfinal decimal(9,2),
+	CompraClassificacao decimal(9,2),
+	CompraLicitacaoID int not null,
+	CompraProdutoID int not null
 );
 
 Go 
