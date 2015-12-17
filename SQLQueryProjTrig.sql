@@ -2,6 +2,9 @@ Use CBDLeiloes
 Go
 
 --Triggers que disparam--
+IF OBJECT_ID ('SchemaLicitacao.TrLicitacao', 'TR') IS NOT NULL
+	DROP Trigger SchemaLicitacao.TrLicitacao ;
+GO
 CREATE TRIGGER SchemaLicitacao.TrLicitacao
 ON SchemaLicitacao.Licitacao
 AFTER INSERT 
@@ -10,8 +13,11 @@ Declare @data datetime
 Declare @produto int
 Declare @licitacao int
 Declare @valor decimal
+Declare @userID int
 BEGIN
-	select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual from inserted
+	select @data =LicitacaoData, @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual, 
+		@userID=LicitacaoUtilizadorID 
+		from inserted
 	if @valor is null
 	Begin
 		if exists (select 1 from SchemaProduto.Historico where @produto=HistoricoProdutoID)
@@ -23,9 +29,7 @@ BEGIN
 			select @valor=ProdutoValorActual from SchemaProduto.Produto where @produto=ProdutoId
 		end
    End
-   insert into SchemaProduto.Historico(
-   HistoricoValorLicitacao,HistoricoDataCompetLicitacao ,HistoricoProdutoID, HistoricoLicitacaoID
-   )values(@valor, getdate(),@produto,@licitacao)
+   execute SchemaProduto.procLicitarProd @userID,N'Faz chorar',N'2016-10-12',10,N'mail@io.at',N'Pass'
 
 	--update SchemaProduto.Produto
 	--set ProdutoValorActual= @valor where ProdutoId=@produto
