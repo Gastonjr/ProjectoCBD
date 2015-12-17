@@ -3,6 +3,9 @@ Go
 
 --Procedimentos que Procedem--
 --Procedimento para registar o utilizador--
+IF OBJECT_ID ('SchemaUtilizador.procRegUser', 'P') IS NOT NULL
+	DROP Proc SchemaUtilizador.procRegUser;
+GO
 create proc SchemaUtilizador.procRegUser
 		(@username varchar(40), @password varchar(32), @email varchar(255),
 		@userDoB varchar(50),@userPhone varchar(9))
@@ -43,7 +46,9 @@ GO
 --Go
 
 --Procedimento para colocar um produto à venda--
-
+IF OBJECT_ID ('SchemaProduto.procVenderProd', 'P') IS NOT NULL
+	DROP proc SchemaProduto.procVenderProd;
+GO
 Create proc SchemaProduto.procVenderProd
 			(@ProdDesc varchar(100), @ProdNome varchar(50), @ProdDataLimite varchar(50), 
 			 @ProdValorMin int,@userID int)/*verifica se utilizador está autenticado ou login*/
@@ -73,6 +78,9 @@ Go
 --Go
 
 --Procedimento para licitar num produto--
+IF OBJECT_ID ('SchemaLicitacao.procLicitarProd', 'P') IS NOT NULL
+	DROP proc SchemaLicitacao.procLicitarProd;
+GO
 Create proc SchemaLicitacao.procLicitarProd
 			(@userID int, @prodid int, @licitaval int)
 as
@@ -117,3 +125,4 @@ BEGIN
 END
 Go
 --Teste do procedimento procLicitarProd--
+--(Coming Soon...)--

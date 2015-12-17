@@ -3,6 +3,9 @@ Go
 
 --Funções que devem funcionar.--
 --Converte a password para uma hash--
+IF OBJECT_ID ('SchemaUtilizador.funcPassToHash', 'FS') IS NOT NULL
+	DROP function SchemaUtilizador.funcPassToHash;
+GO
 CREATE FUNCTION SchemaUtilizador.funcPassToHash (@pass NVARCHAR)
 RETURNS NVARCHAR(32)
 AS
@@ -17,7 +20,9 @@ GO
 --select SchemaUtilizador.funcPassToHash('OAS53QMI5JS')/*exemplo que o mais precisa-se no projeto*/
 select SchemaUtilizador.funcPassToHash('password1')/*exemplo que o mais precisa-se no projeto*/
 */
-
+IF OBJECT_ID ('SchemaUtilizador.funcIdadeTens', 'FS') IS NOT NULL
+	DROP function SchemaUtilizador.funcIdadeTens;
+GO
 --Calcular a idade a partir da data --/* sofreu a alteração na aula de Lab*/
 CREATE FUNCTION SchemaUtilizador.funcIdadeTens(@userId int)
 RETURNS int
@@ -45,7 +50,10 @@ GO
 
 
 --Compara a password do utilizador (usar em logins)--
-CREATE FUNCTION SchemaUtilizador.funcPassConfirm (@user int, @pass NVARCHAR)
+IF OBJECT_ID ('SchemaUtilizador.funcPassConfirm', 'FS') IS NOT NULL
+	DROP function SchemaUtilizador.funcPassConfirm;
+GO
+CREATE FUNCTION SchemaUtilizador.funcPassConfirm(@user int, @pass NVARCHAR)
 RETURNS int
 AS
 BEGIN
@@ -60,6 +68,9 @@ END;
 Go
 
 --Compara 2 valores e devolve a diferença
+IF OBJECT_ID ('SchemaLicitacao.funcCompValor', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.funcCompValor;
+GO
 Create FUNCTION SchemaLicitacao.funcCompValor(@valor1 decimal,@valor2 decimal)
 returns decimal
 as
