@@ -82,7 +82,7 @@ IF OBJECT_ID ('SchemaLicitacao.procLicitarProd', 'P') IS NOT NULL
 	DROP proc SchemaLicitacao.procLicitarProd;
 GO
 Create proc SchemaLicitacao.procLicitarProd
-			(@userID int, @prodid int, @licitaval decimal)
+			(@userID int, @prodID int, @licitaVal decimal, @licitaValMax decimal)
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
