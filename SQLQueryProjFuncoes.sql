@@ -67,16 +67,58 @@ BEGIN
 END;
 Go
 
---Compara 2 valores e devolve a diferença
-IF OBJECT_ID ('SchemaLicitacao.funcCompValor', 'FS') IS NOT NULL
-	DROP function SchemaLicitacao.funcCompValor;
+--Compara 2 valores e vê o maior 0=erro, 1=Licitacao Velha e 2=Licitacao Nova
+IF OBJECT_ID ('SchemaLicitacao.funcCompLicita', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.funcCompLicita;
 GO
-Create FUNCTION SchemaLicitacao.funcCompValor(@valor1 decimal,@valor2 decimal)
-returns decimal
+Create FUNCTION SchemaLicitacao.funcCompLicita(@licitacaoNovaVal decimal,@licitacaoVelhaID int, @prodID int)
+returns int
 as
 BEGIN
-	DECLARE @returnVal decimal(9,2)
-	set @returnVal =(@valor1-@valor2)
-	return @returnVal
+	DECLARE @prodVal decimal(9,2)
+	DECLARE @licitacaoVelhaVal decimal(9,2)
+	DECLARE @licitacaoVelhaValMax decimal(9,2)
+	select @prodVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId=@prodID
+	if(@prodVal> @licitacaoNovaVal)
+	begin
+		return 0
+	end
+	select @licitacaoVelhaVal= LicitacaoValorActual, @licitacaoVelhaValMax=Max(LicitacaoValorMax) from Licitacao where LicitacaoProdutoID=@prodID
+	if(@licitacaoVelhaValMax<@licitacaoNovaVal)
+	begin
+		return 2
+	end
+	else
+	begin
+		return 1
+	end
 END
 Go
+
+--Calcular a licitacao a partir de 2 valores 
+IF OBJECT_ID ('SchemaLicitacao.funcCompLicita', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.funcCompLicita;
+GO
+Create FUNCTION SchemaLicitacao.funcCompLicita(@licitacaoNovaVal decimal,@licitacaoVelha decimal)
+returns decimal
+as
+Begin
+	Declare @return decimal
+	if(@licitacaoNovaVal<@licitacaoVelha)
+	begin
+		set @return = (@licitacaoNovaVal+0.01)
+	end
+	else
+	begin
+		if (@licitacaoNovaVal=@licitacaoVelha)
+		begin
+			set @return= @licitacaoVelha
+		end
+		else
+		begin
+			set @return=(@licitacaoVelha+0.01)
+		end
+	end
+	return @return 
+end
+go
