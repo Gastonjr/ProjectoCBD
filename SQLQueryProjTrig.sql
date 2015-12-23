@@ -16,10 +16,10 @@ Declare @valor decimal
 Declare @userID int
 Declare @valorMax decimal
 BEGIN
-	select @produto=LicitacaoProdutoID, @licitacao=LicitacaoId, @valor=LicitacaoValorActual, 
+	select @produto=LicitacaoProdutoID, @licitacao=LicitacaoId,
 		@userID=LicitacaoUtilizadorID, @valorMax=LicitacaoValorMax  
 		from inserted
 
-	execute SchemaLicitacao.procLicitarProd @userID,@produto,@valor, @valorMax
+	execute SchemaLicitacao.procLicitarProd @userID,@produto, @valorMax
 END
 Go
