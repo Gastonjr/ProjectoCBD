@@ -95,14 +95,14 @@ BEGIN
 	if datediff(s,getdate(),@prodDate)<0
 	begin
 		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
-		RAISERROR(@msgErro,16,1) 
+		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
 
 	if exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@userID)
 	begin
 		set @msgErro = 'O utilizador não se encontra nos registos.'
-		RAISERROR(@msgErro,16,1) 
+		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
 	--Procurar o valor da licitação actual de um produto.
@@ -114,7 +114,7 @@ BEGIN
 		if @licitaValMax < @valActual
 		begin
 			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @licitaval) +' < '+ CONVERT(VARCHAR, @valActual)
-			RAISERROR(@msgErro,16,1) 
+			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
 
