@@ -82,15 +82,18 @@ IF OBJECT_ID ('SchemaLicitacao.procLicitarProd', 'P') IS NOT NULL
 	DROP proc SchemaLicitacao.procLicitarProd;
 GO
 Create proc SchemaLicitacao.procLicitarProd
-			(@userID int, @prodID int, @licitaValMax decimal)
+			(@NuserID int, @prodID int, @licitaValMax decimal)
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
+	Declare @VuserID int
 	DECLARE @valActual decimal(9,2)
 	DECLARE @valActualMax decimal(9,2)
 	DECLARE @prodDate datetime
-	DECLARE @NLiciVal DECIMAL(9,2)
 	DECLARE @ProdVal DECIMAL(9,2)
+	DECLARE @NLiciVal DECIMAL(9,2)
+	DECLARE @NLiciValMax DECIMAL(9,2)
+	DECLARE @FuserID int
 	Set nocount on
 	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
 	begin 
@@ -98,9 +101,9 @@ BEGIN
 		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
-	
+
 	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
-	
+
 	if datediff(s,getdate(),@prodDate)<0
 	begin
 		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
@@ -108,7 +111,6 @@ BEGIN
 		RETURN
 	end
 
-	
 	if (@ProdVal>@licitaValMax)
 	begin
 		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
@@ -122,7 +124,6 @@ BEGIN
 		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
-	
 
 	--Procurar o valor da licitação actual de um produto.
 	if exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
@@ -136,22 +137,51 @@ BEGIN
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
-
-		if(@valActualMax < @licitaValMax)
+		if(@valActual!=@valActualMax and @valActualMax != (@valActual+0.01))
 		begin
-			set @NLiciVal=@valActual
+		Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+			values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
 		end
 		else
 		begin
-			set @NLiciVal=@valActual
+			set @msgErro = 'Bem vindo aos 0.01%'
+			RAISERROR(@msgErro,16,1)
+			RETURN
 		end
+
+		if(@valActualMax < @licitaValMax)
+		begin
+			set @NLiciVal=(@licitaValMax+0.01)
+			set @NLiciValMax=@valActualMax
+			set @FuserID=@VuserID
+		end
+		else
+		begin
+			if(@valActualMax=@licitaValMax)
+			begin
+				set @NLiciVal=@valActualMax
+				set @NLiciValMax=@valActualMax
+				set @FuserID=@VuserID
+			end
+			else
+			begin
+				set @NLiciVal=(@valActualMax+0.01)
+				set @NLiciValMax=@licitaValMax
+				set @FuserID=@NuserID
+			end
+		end
+		
+		
 	end
 	else
 	begin
 		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
+		set @NLiciValMax=@licitaValMax
+		set @FuserID=@NuserID
 	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
-			values(@userid, @prodid,@licitaValMax, @NLiciVal,Getdate())
+			values(@Fuserid, @prodid,@NLiciValMax, @NLiciVal,Getdate())
+	
 END
 Go
 --Teste do procedimento procLicitarProd--
