@@ -90,11 +90,28 @@ BEGIN
 	DECLARE @valActualMax decimal(9,2)
 	DECLARE @prodDate datetime
 	DECLARE @NLiciVal DECIMAL(9,2)
+	DECLARE @ProdVal DECIMAL(9,2)
 	Set nocount on
-	select @prodDate = ProdutoDataLimiteLeilao from SchemaProduto.Produto where @prodid=ProdutoId
+	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
+	begin 
+		set @msgErro = 'O produto não se encontra nos registos.'
+		RAISERROR(@msgErro,16,1)
+		RETURN
+	end
+	
+	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
+	
 	if datediff(s,getdate(),@prodDate)<0
 	begin
 		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
+		RAISERROR(@msgErro,16,1)
+		RETURN
+	end
+
+	
+	if (@ProdVal>@licitaValMax)
+	begin
+		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
 		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
@@ -105,12 +122,8 @@ BEGIN
 		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
-	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
-	begin 
-		set @msgErro = 'O produto não se encontra nos registos.'
-		RAISERROR(@msgErro,16,1)
-		RETURN
-	end
+	
+
 	--Procurar o valor da licitação actual de um produto.
 	if exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
 	begin
