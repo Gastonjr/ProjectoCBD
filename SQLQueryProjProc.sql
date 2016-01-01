@@ -89,7 +89,7 @@ BEGIN
 	DECLARE @valActual decimal(9,2)
 	DECLARE @valActualMax decimal(9,2)
 	DECLARE @prodDate datetime
-	DECLARE @retVal DECIMAL(9,2)
+	DECLARE @NLiciVal DECIMAL(9,2)
 	Set nocount on
 	select @prodDate = ProdutoDataLimiteLeilao from SchemaProduto.Produto where @prodid=ProdutoId
 	if datediff(s,getdate(),@prodDate)<0
@@ -99,7 +99,7 @@ BEGIN
 		RETURN
 	end
 
-	if exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@userID)
+	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@userID)
 	begin
 		set @msgErro = 'O utilizador não se encontra nos registos.'
 		RAISERROR(@msgErro,16,1)
@@ -120,16 +120,16 @@ BEGIN
 
 		if(@valActualMax < @licitaValMax)
 		begin
-			set @retVal=@valActual
+			set @NLiciVal=@valActual
 		end
 		else
 		begin
-			set @retVal=@valActual
+			set @NLiciVal=@valActual
 		end
 	end
 	else
 	begin
-		select @retVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
+		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
 	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 			values(@userid, @prodid,@licitaval, @retVal,Getdate())
