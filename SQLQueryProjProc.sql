@@ -105,6 +105,12 @@ BEGIN
 		RAISERROR(@msgErro,16,1)
 		RETURN
 	end
+	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
+	begin 
+		set @msgErro = 'O produto não se encontra nos registos.'
+		RAISERROR(@msgErro,16,1)
+		RETURN
+	end
 	--Procurar o valor da licitação actual de um produto.
 	if exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
 	begin
@@ -132,7 +138,7 @@ BEGIN
 		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
 	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
-			values(@userid, @prodid,@licitaval, @retVal,Getdate())
+			values(@userid, @prodid,@licitaValMax, @NLiciVal,Getdate())
 END
 Go
 --Teste do procedimento procLicitarProd--
