@@ -95,35 +95,30 @@ BEGIN
 	DECLARE @NLiciValMax DECIMAL(9,2)
 	DECLARE @FuserID int
 	Set nocount on
-	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
-	begin 
-		set @msgErro = 'O produto não se encontra nos registos.'
-		RAISERROR(@msgErro,16,1)
-		RETURN
+
+	if SchemaLicitacao.CheckProduto(@prodID)=0
+	begin
+		return
 	end
+
+	if SchemaLicitacao.CheckUtilizador(@NuserID)=0
+	BEGIN
+		RETURN
+	END
 
 	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
-
-	if datediff(s,getdate(),@prodDate)<0
+	
+	if SchemaLicitacao.CheckDataLeilao(@prodDate)=0
 	begin
-		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
-		RAISERROR(@msgErro,16,1)
-		RETURN
+		return
 	end
 
-	if (@ProdVal>@licitaValMax)
+	if SchemaLicitacao.CheckDataLeilao(@ProdVal,@licitaValMax)=0
 	begin
-		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
-		RAISERROR(@msgErro,16,1)
-		RETURN
+		return
 	end
-
-	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@NuserID)
-	begin
-		set @msgErro = 'O utilizador não se encontra nos registos.'
-		RAISERROR(@msgErro,16,1)
-		RETURN
-	end
+	
+	
 
 	--Procurar o valor da licitação actual de um produto.
 	if exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
@@ -138,16 +133,19 @@ BEGIN
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
-		if(@valActual!=@valActualMax and @valActualMax != (@valActual+0.01))
+
+		if(@valActual!=@licitaValMax and @licitaValMax != (@valActual+0.01))
 		begin
 		Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
 			values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01))
 		end
 		else
 		begin
-			set @msgErro = 'Bem vindo aos 0.01'
-			RAISERROR(@msgErro,16,1)
-			RETURN
+			if()
+			begin
+				Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
+					values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01))
+			end
 		end
 
 		if(@valActualMax < @licitaValMax)
