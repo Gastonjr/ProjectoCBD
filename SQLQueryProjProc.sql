@@ -171,8 +171,6 @@ BEGIN
 				set @FuserID=@NuserID
 			end
 		end
-		
-		
 	end
 	else
 	begin
@@ -196,16 +194,13 @@ create proc SchemaUtilizador.ModificarPassword
 		@passwordNova varchar(32))
 as
 BEGIN
-
 	DECLARE @msgErro varchar(500)
-
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorEmail=@username)
 	begin
 		set @msgErro = 'O username é  inválido: ' + CONVERT(VARCHAR,@username)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-
 	if  not exists (select 1 from SchemaUtilizador.Utilizador 
 		where UtilizadorEmail=@username and  UtilizadorSenha= @passwordAntiga)
 		/*verifica se existe a passworda antiga */
@@ -214,7 +209,6 @@ BEGIN
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-	
 	update SchemaUtilizador.Utilizador set UtilizadorSenha= @passwordNova where UtilizadorSenha= @passwordAntiga and UtilizadorEmail= @username
 	if @@ERROR <>0
 	begin
@@ -260,7 +254,6 @@ IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActivas', 'P') IS NOT NULL
 GO
 create proc SchemaUtilizador.MostrarLicitacaoActivas
 		(@utilizadorID int )
-		
 as
 BEGIN
 
@@ -281,8 +274,8 @@ BEGIN
 		RETURN
 	end
 
-select l.*from SchemaLicitacao.Licitacao l , SchemaProduto.Produto p
-where l.LicitacaoProdutoID= p.ProdutoId and p.ProdutoDataLimiteLeilao > GETDATE() and l.LicitacaoUtilizadorID= @utilizadorID;
+	select l.*from SchemaLicitacao.Licitacao l , SchemaProduto.Produto p
+		where l.LicitacaoProdutoID= p.ProdutoId and p.ProdutoDataLimiteLeilao > GETDATE() and l.LicitacaoUtilizadorID= @utilizadorID;
 	
 	if @@ERROR <>0
 	begin
