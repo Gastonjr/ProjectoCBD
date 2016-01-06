@@ -194,7 +194,6 @@ GO
 create proc SchemaUtilizador.ModificarPassword
 		(@username varchar(40), @passwordAntiga varchar(32),
 		@passwordNova varchar(32))
-		
 as
 BEGIN
 
@@ -202,14 +201,16 @@ BEGIN
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorEmail=@username)
 	begin
-		set @msgErro = 'O username is  inválid xD: ' + CONVERT(VARCHAR,@username)
+		set @msgErro = 'O username é  inválido: ' + CONVERT(VARCHAR,@username)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorEmail=@username and  UtilizadorSenha= @passwordAntiga)/*verifica se existe a passworda antiga */
+	if  not exists (select 1 from SchemaUtilizador.Utilizador 
+		where UtilizadorEmail=@username and  UtilizadorSenha= @passwordAntiga)
+		/*verifica se existe a passworda antiga */
 	begin
-		set @msgErro = 'a password não existe: ' + CONVERT(VARCHAR,@passwordAntiga)
+		set @msgErro = 'A password antiga é inválida: ' + CONVERT(VARCHAR,@passwordAntiga)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -217,7 +218,7 @@ BEGIN
 	update SchemaUtilizador.Utilizador set UtilizadorSenha= @passwordNova where UtilizadorSenha= @passwordAntiga and UtilizadorEmail= @username
 	if @@ERROR <>0
 	begin
-		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		set @msgErro = 'Falha no update com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
 		RAISERROR (@msgErro, 16,1)
 	end
 END
@@ -229,26 +230,24 @@ IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoSeguido;
 GO
 create proc SchemaUtilizador.ProdutoSeguido
-		(@utilizdorID int 
-		)
-		
+		(@utilizadorID int )
 as
 BEGIN
-
 	DECLARE @msgErro varchar(500)
 
-	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizdorID)
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = ' id is valid ' + CONVERT(int ,@utilizdorID)
+		set @msgErro = 'Id é invalido ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-select SeguirProdutoProdutoId from SchemaUtilizador.SeguirProduto where SeguirProdutoUtilizadorID=@utilizdorID;	
+	select SeguirProdutoProdutoId from SchemaUtilizador.SeguirProduto 
+		where SeguirProdutoUtilizadorID=@utilizadorID;	
 	
 	if @@ERROR <>0
 	begin
-		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		set @msgErro = 'Falha no Select com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
 		RAISERROR (@msgErro, 16,1)
 	end
 END
@@ -260,42 +259,38 @@ IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActivas', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.MostrarLicitacaoActivas;
 GO
 create proc SchemaUtilizador.MostrarLicitacaoActivas
-		(@utilizdorID int 
-		)
+		(@utilizadorID int )
 		
 as
 BEGIN
 
 	DECLARE @msgErro varchar(500)
 
-	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizdorID)
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = ' id is valid ' + CONVERT(int ,@utilizdorID)
+		set @msgErro = 'Id é invalido ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
 
-	if  not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoUtilizadorID=@utilizdorID)
+	if  not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoUtilizadorID=@utilizadorID)
 	begin
-		set @msgErro = ' o utilizador não licitou ' + CONVERT(int ,@utilizdorID)
+		set @msgErro = 'O utilizador não licitou ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
 select l.*from SchemaLicitacao.Licitacao l , SchemaProduto.Produto p
-where l.LicitacaoProdutoID= p.ProdutoId and p.ProdutoDataLimiteLeilao > GETDATE() and l.LicitacaoUtilizadorID= @utilizdorID;
+where l.LicitacaoProdutoID= p.ProdutoId and p.ProdutoDataLimiteLeilao > GETDATE() and l.LicitacaoUtilizadorID= @utilizadorID;
 	
 	if @@ERROR <>0
 	begin
-		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		set @msgErro = 'Falha no select com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
 		RAISERROR (@msgErro, 16,1)
 	end
 END
 GO
-
-
-
 
 --select * from SchemaProduto.Produto;
 --select * from SchemaLicitacao.Licitacao
