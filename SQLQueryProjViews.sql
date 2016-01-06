@@ -10,7 +10,7 @@ from  SchemaProduto.Produto,SchemaUtilizador.Utilizador
 where   UtilizadorId= ProdutoUtilizadorID and DATEDIFF(S, GETDATE(), ProdutoDataLimiteLeilao)>0
 group by ProdutoUtilizadorID;
  
- --select * from SchemaProduto.vUtilizadorProvendoAvenda;
+--select * from SchemaProduto.vUtilizadorProvendoAvenda;
 --criação de view que lista o numero de produtos vendidos.
 GO
 create view SchemaProduto.vUtilizadorProdutosVendidos
@@ -29,3 +29,5 @@ where ProdutoUtilizadorID= UtilizadorId and DATEDIFF(S, GETDATE(), ProdutoDataLi
   where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId
    group by UtilizadorId;
 Go     
+
+

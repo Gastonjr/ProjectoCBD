@@ -1,7 +1,7 @@
 Use CBDLeiloes
 Go
 
---Procedimentos que Procedem--
+--Procedimentos que Procedem ou procedure --
 --Procedimento para registar o utilizador--
 create proc SchemaUtilizador.procRegUser
 		(@username varchar(40), @password varchar(32), @email varchar(255),
@@ -117,3 +117,111 @@ BEGIN
 END
 Go
 --Teste do procedimento procLicitarProd--
+
+
+--****************** procedimento que funcionam na fase 2 *************************---
+
+
+create proc SchemaUtilizador.ModificarPassword
+		(@username varchar(40), @passwordAntiga varchar(32),
+		@passwordNova varchar(32))
+		
+as
+BEGIN
+
+	DECLARE @msgErro varchar(500)
+
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorEmail=@username)
+	begin
+		set @msgErro = 'O username is  inválid xD: ' + CONVERT(VARCHAR,@username)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorEmail=@username and  UtilizadorSenha= @passwordAntiga)/*verifica se existe a passworda antiga */
+	begin
+		set @msgErro = 'a password não existe: ' + CONVERT(VARCHAR,@passwordAntiga)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	
+	update SchemaUtilizador.Utilizador set UtilizadorSenha= @passwordNova where UtilizadorSenha= @passwordAntiga and UtilizadorEmail= @username
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
+
+---***procedure de uma lista de produtos seguido por um utilizador***---
+
+
+create proc SchemaUtilizador.ProdutoSeguido
+		(@utilizdorID int 
+		)
+		
+as
+BEGIN
+
+	DECLARE @msgErro varchar(500)
+
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizdorID)
+	begin
+		set @msgErro = ' id is valid ' + CONVERT(int ,@utilizdorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+select SeguirProdutoProdutoId from SchemaUtilizador.SeguirProduto where SeguirProdutoUtilizadorID=@utilizdorID;	
+	
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
+
+
+--*** mostrar uma licitação que está no prazo**---
+create proc SchemaUtilizador.MostrarLicitacaoActivas
+		(@utilizdorID int 
+		)
+		
+as
+BEGIN
+
+	DECLARE @msgErro varchar(500)
+
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizdorID)
+	begin
+		set @msgErro = ' id is valid ' + CONVERT(int ,@utilizdorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+
+	if  not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoUtilizadorID=@utilizdorID)
+	begin
+		set @msgErro = ' o utilizador não licitou ' + CONVERT(int ,@utilizdorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+select l.*from SchemaLicitacao.Licitacao l , SchemaProduto.Produto p
+where l.LicitacaoProdutoID= p.ProdutoId and p.ProdutoDataLimiteLeilao > GETDATE() and l.LicitacaoUtilizadorID= @utilizdorID;
+	
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no insert com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
+
+
+
+
+--select * from SchemaProduto.Produto;
+--select * from SchemaLicitacao.Licitacao
