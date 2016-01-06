@@ -145,7 +145,7 @@ BEGIN
 		end
 		else
 		begin
-			set @msgErro = 'Bem vindo aos 0.01%'
+			set @msgErro = 'Bem vindo aos 0.01'
 			RAISERROR(@msgErro,16,1)
 			RETURN
 		end
