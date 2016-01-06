@@ -2,6 +2,7 @@ Use CBDLeiloes
 Go
 
 --Triggers que disparam--
+/*--Devido à forma como o procedimento procede o trigger foi declarado irrelevante.--
 IF OBJECT_ID ('SchemaLicitacao.TrLicitacao', 'TR') IS NOT NULL
 	DROP Trigger SchemaLicitacao.TrLicitacao ;
 GO
@@ -23,3 +24,4 @@ BEGIN
 	execute SchemaLicitacao.procLicitarProd @userID,@produto, @valorMax
 END
 Go
+*/
