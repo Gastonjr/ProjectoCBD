@@ -1,5 +1,5 @@
 --Coisa que acontece no momento que deviam acontecer coisas--
---temos de criar um schema a cada tabela 
+--temos de criar tres   schemas para o nosso projecto... 
 USE master
 GO
 
@@ -33,7 +33,7 @@ Create table SchemaUtilizador.Utilizador (
 	UtilizadorEmail varchar(255)
 	constraint CK_Email
 		check (UtilizadorEmail like '%@%.%') ,
-	UtilizadorDataRegisto date,
+	UtilizadorDataRegisto datetime not null default getDate(),
 	UtilizadorDataNascimento date,
 	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone
@@ -53,7 +53,6 @@ Create table SchemaProduto.Produto (
 	ProdutoId int identity(1,1) not null, 
 	ProdutoNome varchar(50),
 	ProdutoDescricao varchar(255),
-	ProdutoValorActual decimal(9,2),
 	ProdutoValorMinVenda decimal(9,2),
 	ProdutoDataLimiteLeilao dateTime,
 	ProdutoUtilizadorID int not null
@@ -76,7 +75,7 @@ Create table SchemaUtilizador.SeguirProduto (
 
 Create table SchemaUtilizador.Compra(
 	CompraId int identity(1,1) not null,
-	CompraClassificacao decimal(9,2),
+	CompraClassificacao int not null,
 	CompraLicitacaoID int not null,
 	CompraProdutoID int not null
 );

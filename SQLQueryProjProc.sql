@@ -118,7 +118,7 @@ BEGIN
 		RETURN
 	end
 
-	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@userID)
+	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@NuserID)
 	begin
 		set @msgErro = 'O utilizador não se encontra nos registos.'
 		RAISERROR(@msgErro,16,1)
@@ -133,7 +133,7 @@ BEGIN
 
 		if @licitaValMax < @valActual
 		begin
-			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @licitaval) +' < '+ CONVERT(VARCHAR, @valActual)
+			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @Nlicitaval) +' < '+ CONVERT(VARCHAR, @valActual)
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
