@@ -11,8 +11,9 @@ SELECT ProdutoUtilizadorID, COUNT(ProdutoId) as ProdutosVendidos
 from  SchemaProduto.Produto,SchemaUtilizador.Utilizador       
 where   UtilizadorId= ProdutoUtilizadorID and DATEDIFF(S, GETDATE(), ProdutoDataLimiteLeilao)>0
 group by ProdutoUtilizadorID;
- Go
+Go
  --select * from SchemaProduto.vUtilizadorProvendoAvenda;
+
 --criação de view que lista o numero de produtos vendidos.
 IF OBJECT_ID ('SchemaProduto.vUtilizadorProdutosVendidos', 'V') IS NOT NULL
 	DROP Trigger SchemaProduto.vUtilizadorProdutosVendidos;
@@ -22,7 +23,7 @@ as
 select UtilizadorId,  count(ProdutoId) as Produtosvendidos from SchemaUtilizador.Utilizador, SchemaProduto.Produto
 
 where ProdutoUtilizadorID= UtilizadorId and DATEDIFF(S, GETDATE(), ProdutoDataLimiteLeilao)<0 group by UtilizadorId;
- Go
+Go
 
 IF OBJECT_ID ('SchemaUtilizador.vUtililizadorLicitacaoCompra', 'V') IS NOT NULL
 	DROP Trigger SchemaUtilizador.vUtililizadorLicitacaoCompra;

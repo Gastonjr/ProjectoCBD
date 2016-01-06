@@ -61,7 +61,7 @@ Create table SchemaProduto.Produto (
 
 Create table SchemaLicitacao.Licitacao (
 	LicitacaoId int identity(1,1) not null,
-	LicitacaoData dateTime,
+	LicitacaoData dateTime not null default getDate(),
 	LicitacaoValorActual decimal(9,2),
 	LicitacaoValorMax decimal(9,2),
 	LicitacaoProdutoID int not null,

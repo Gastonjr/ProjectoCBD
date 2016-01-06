@@ -31,10 +31,10 @@ BEGIN
 	DECLARE @idade int
 	DECLARE @dataNasc date
 
-	--reaver data nascimento do utilizador especificado
+	--reaver data nascimento do utilizador especificado--
 	select @dataNasc = UtilizadorDataNascimento from SchemaUtilizador.Utilizador where UtilizadorId = @userId
 
-	--mediante data obtida, calcular idade em relação à data atual
+	--mediante data obtida, calcular idade em relação à data atual--
 	select @idade = datediff(YYYY,@dataNasc, GETDATE()) 
 	
 	if(@idade is NULL)
