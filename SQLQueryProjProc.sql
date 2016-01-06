@@ -130,17 +130,18 @@ BEGIN
 	begin
 		select @valActual= MAX(LicitacaoValorActual), @valActualMax=LicitacaoValorMax 
 			from Licitacao where LicitacaoProdutoID=@prodID
+			group by LicitacaoValorMax
 
 		if @licitaValMax < @valActual
 		begin
-			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @Nlicitaval) +' < '+ CONVERT(VARCHAR, @valActual)
+			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @licitaValMax) +' < '+ CONVERT(VARCHAR, @valActual)
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
 		if(@valActual!=@valActualMax and @valActualMax != (@valActual+0.01))
 		begin
-		Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
-			values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
+		Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
+			values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01))
 		end
 		else
 		begin
