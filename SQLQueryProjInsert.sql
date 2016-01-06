@@ -4,6 +4,7 @@ Go
 ---------------------------------------------------------------------------------------------
 --Inserção de dados da tabela utilizador --
 ---------------------------------------------------------------------------------------------
+
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Dolan Moore','yI1nsH3ojV6fLB5c','placerat.orci.lacus@maurisaliquam.co.uk','2016-01-18','1956-01-04','967132109')
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Myles Lowery','GG6opA4boD6ufR2h','Quisque.fringilla.euismod@Phasellus.org','2015-08-12','1956-07-14','941063393')
 INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Yolanda Bailey','wK0zLU5pVX2suD5t','sem@nonmassanon.ca','2016-01-31','1937-02-03','976457812')
@@ -28,7 +29,7 @@ INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[Util
 --select * from SchemaUtilizador.Utilizador;
 --inserção de dados de seguidor---
 ---------------------------------------------------------------------------------------------
-
+Go
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(3,13)
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(8,12)
 INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) VALUES(13,7)
@@ -53,52 +54,55 @@ INSERT INTO SchemaUtilizador.Seguidor([SeguidorSeguidorID],[SeguidorSeguidoID]) 
 --select * from SchemaUtilizador.Seguidor;
 --inserção de dados do Produto--
 ----------------------------------------------------------------------------------------------
-INSERT INTO SchemaProduto.Produto([ProdutoNome],ProdutoDescricao,[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Fusce Aliquet Magna Industries','dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas', 12.91,'2006-06-17',11)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],ProdutoDescricao,[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Magna Industries','Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque.',85.96,'2011-02-15',20)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Cursus In Hendrerit PC','id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus',39.45,'2013-05-21',19)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Pede Suspendisse Dui Corporation','felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris',56.35,'2013-07-06',16)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Nulla Vulputate Dui PC','nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor',40.36,'2011-04-13',19)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Commodo Hendrerit Donec Foundation','dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus',19.35,'2012-06-16',19)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Mauris Inc.','metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero.',74.51,'2013-08-23',20)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Odio Tristique Pharetra Corp.','nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc',25.05,'2006-10-23',1)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Nec Luctus LLC','Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce',59.74,'2009-04-29',2)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Cras Convallis Institute','id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et',5.33,'2009-12-13',3)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Ut Tincidunt Company','pharetra. Quisque ac libero nec ligula consectetuer rhoncus. Nullam velit dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies',95.56,'2006-03-25',17)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Est Nunc LLC','elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur dictum. Phasellus in felis. Nulla tempor augue ac ipsum.',28.57,'2011-06-06',1)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Fringilla Purus Mauris Inc.','orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce',97.01,'2006-12-05',1)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Neque Pellentesque Massa Incorporated','vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis',74.67,'2005-12-17',6)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Imperdiet Ullamcorper Duis LLP','netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer',77.26,'2005-05-02',10)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Urna Convallis Erat Industries','est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna',55.40,'2009-04-29',17)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Nec Company','leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus,',11.54,'2009-05-27',16)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Pede Limited','Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu',84.06,'2011-03-09',17)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('At Iaculis Quis Company','ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat',28.63,'2007-02-25',6)
-INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Malesuada Fames Foundation','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede.',47.06,'2005-11-26',10);
+Go
+INSERT INTO SchemaProduto.Produto([ProdutoNome],ProdutoDescricao,[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Fusce Aliquet Magna Industries','dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus euismod urna. Nullam lobortis quam a felis ullamcorper viverra. Maecenas', 12.91,'2016-06-17',11)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],ProdutoDescricao,[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Magna Industries','Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque.',85.96,'2017-02-15',20)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Cursus In Hendrerit PC','id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor dapibus',39.45,'2016-05-21',19)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Pede Suspendisse Dui Corporation','felis ullamcorper viverra. Maecenas iaculis aliquet diam. Sed diam lorem, auctor quis, tristique ac, eleifend vitae, erat. Vivamus nisi. Mauris',56.35,'2017-07-06',16)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Nulla Vulputate Dui PC','nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor at risus. Nunc ac sem ut dolor',40.36,'2016-04-13',19)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Commodo Hendrerit Donec Foundation','dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies dignissim lacus. Aliquam rutrum lorem ac risus. Morbi metus. Vivamus',19.35,'2016-06-16',19)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Mauris Inc.','metus urna convallis erat, eget tincidunt dui augue eu tellus. Phasellus elit pede, malesuada vel, venenatis vel, faucibus id, libero.',74.51,'2017-08-23',20)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Odio Tristique Pharetra Corp.','nibh. Quisque nonummy ipsum non arcu. Vivamus sit amet risus. Donec egestas. Aliquam nec enim. Nunc ut erat. Sed nunc',25.05,'2020-10-23',1)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Nec Luctus LLC','Fusce fermentum fermentum arcu. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Phasellus ornare. Fusce',59.74,'2017-04-29',2)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Cras Convallis Institute','id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus et',5.33,'2016-12-13',3)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Ut Tincidunt Company','pharetra. Quisque ac libero nec ligula consectetuer rhoncus. Nullam velit dui, semper et, lacinia vitae, sodales at, velit. Pellentesque ultricies',95.56,'2016-03-25',17)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Est Nunc LLC','elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum. Curabitur dictum. Phasellus in felis. Nulla tempor augue ac ipsum.',28.57,'2017-06-06',1)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Fringilla Purus Mauris Inc.','orci. Phasellus dapibus quam quis diam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Fusce',97.01,'2017-12-05',1)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Neque Pellentesque Massa Incorporated','vitae, posuere at, velit. Cras lorem lorem, luctus ut, pellentesque eget, dictum placerat, augue. Sed molestie. Sed id risus quis',74.67,'2018-12-17',6)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Imperdiet Ullamcorper Duis LLP','netus et malesuada fames ac turpis egestas. Fusce aliquet magna a neque. Nullam ut nisi a odio semper cursus. Integer',77.26,'2019-05-02',10)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Urna Convallis Erat Industries','est. Mauris eu turpis. Nulla aliquet. Proin velit. Sed malesuada augue ut lacus. Nulla tincidunt, neque vitae semper egestas, urna',55.40,'2019-04-29',17)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Nec Company','leo, in lobortis tellus justo sit amet nulla. Donec non justo. Proin non massa non ante bibendum ullamcorper. Duis cursus,',11.54,'2018-05-27',16)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Pede Limited','Curabitur ut odio vel est tempor bibendum. Donec felis orci, adipiscing non, luctus sit amet, faucibus ut, nulla. Cras eu',84.06,'2017-03-09',17)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('At Iaculis Quis Company','ac metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris erat',28.63,'2016-02-25',6)
+INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValorMinVenda],[ProdutoDataLimiteLeilao],[ProdutoUtilizadorID]) VALUES('Malesuada Fames Foundation','venenatis vel, faucibus id, libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede.',47.06,'2016-11-26',10);
 ------------------------------------------------------------------------------------------------------
 --inserção de dados da Licitação--
 ------------------------------------------------------------------------------------------------------
-execute SchemaLicitacao.procLicitarProd 5,'pass',20,731.53
-execute SchemaLicitacao.procLicitarProd 6,'pass',12,479.25
-execute SchemaLicitacao.procLicitarProd 17,'pass',12,201.77
-execute SchemaLicitacao.procLicitarProd 16,'pass',11,168.33
-execute SchemaLicitacao.procLicitarProd 16,'pass',3,989.54
-execute SchemaLicitacao.procLicitarProd 4,'pass',13,601.38
-execute SchemaLicitacao.procLicitarProd 1,'pass',17,796.29
-execute SchemaLicitacao.procLicitarProd 2,'pass',20,128.09
-execute SchemaLicitacao.procLicitarProd 18,'pass',14,401.75
-execute SchemaLicitacao.procLicitarProd 12,'pass',5,343.47
-execute SchemaLicitacao.procLicitarProd 1,'pass',17,390.62
-execute SchemaLicitacao.procLicitarProd 14,'pass',10,186.72
-execute SchemaLicitacao.procLicitarProd 20,'pass',1,478.55
-execute SchemaLicitacao.procLicitarProd 10,'pass',10,990.14
-execute SchemaLicitacao.procLicitarProd 2,'pass',9,671.19
-execute SchemaLicitacao.procLicitarProd 16,'pass',1,457.90
-execute SchemaLicitacao.procLicitarProd 12,'pass',20,835.87
-execute SchemaLicitacao.procLicitarProd 6,'pass',19,588.96
-execute SchemaLicitacao.procLicitarProd 6,'pass',8,128.23
-execute SchemaLicitacao.procLicitarProd 4,'pass',12,448.78;
+GO
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 6,12,479.25
+execute SchemaLicitacao.procLicitarProd 17,12,201.77
+execute SchemaLicitacao.procLicitarProd 16,11,168.33
+execute SchemaLicitacao.procLicitarProd 16,3,989.54
+execute SchemaLicitacao.procLicitarProd 4,13,601.38
+execute SchemaLicitacao.procLicitarProd 1,17,796.29
+execute SchemaLicitacao.procLicitarProd 2,20,128.09
+execute SchemaLicitacao.procLicitarProd 18,14,401.75
+execute SchemaLicitacao.procLicitarProd 12,5,343.47
+execute SchemaLicitacao.procLicitarProd 1,17,390.62
+execute SchemaLicitacao.procLicitarProd 14,10,186.72
+execute SchemaLicitacao.procLicitarProd 20,1,478.55
+execute SchemaLicitacao.procLicitarProd 10,10,990.14
+execute SchemaLicitacao.procLicitarProd 2,9,671.19
+execute SchemaLicitacao.procLicitarProd 16,1,457.90
+execute SchemaLicitacao.procLicitarProd 12,20,835.87
+execute SchemaLicitacao.procLicitarProd 6,19,588.96
+execute SchemaLicitacao.procLicitarProd 6,8,128.23
+execute SchemaLicitacao.procLicitarProd 4,12,448.78
 -----------------------------------------------------------------------------------------------------
 --inserção de dados da tabela SeguirProduto----
 -----------------------------------------------------------------------------------------------------
+GO
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(9,9)
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(20,16)
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(10,3)
@@ -119,6 +123,8 @@ INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdu
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(17,20)
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(18,19)
 INSERT INTO SchemaUtilizador.SeguirProduto([SeguirProdutoProdutoId],[SeguirProdutoUtilizadorID]) VALUES(3,11);
+go
+
 --------------------------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.SeguirProduto;
 --select * from SchemaProduto.Produto;
