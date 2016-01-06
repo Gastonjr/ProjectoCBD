@@ -122,3 +122,76 @@ Begin
 	return @return 
 end
 go
+
+--Funcoes de apoio ao procLicitarProd--
+IF OBJECT_ID ('SchemaLicitacao.CheckProduto', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.CheckProduto;
+GO
+Create FUNCTION SchemaLicitacao.CheckProduto(@prodID int)
+returns int
+as
+Begin
+	Declare @msgErro varchar(500)
+	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
+	begin 
+		set @msgErro = 'O produto não se encontra nos registos.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 0
+	end
+	Return 1
+End
+Go
+
+IF OBJECT_ID ('SchemaLicitacao.CheckDataLeilao', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.CheckDataLeilao;
+GO
+Create FUNCTION SchemaLicitacao.CheckDataLeilao(@prodDate datetime)
+returns int
+as
+Begin
+	Declare @msgErro varchar(500)
+	if datediff(s,getdate(),@prodDate)<0
+	begin
+		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
+		RAISERROR(@msgErro,16,1)
+		RETURN 0
+	end
+	return 1
+end
+GO
+
+IF OBJECT_ID ('SchemaLicitacao.CheckValorProduto', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.CheckValorProduto;
+GO
+Create FUNCTION SchemaLicitacao.CheckValorProduto(@ProdVal decimal(9,2),@licitaValMax decimal(9,2))
+returns int
+as
+Begin
+	Declare @msgErro varchar(500)
+	if (@ProdVal>@licitaValMax)
+	begin
+		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 0
+	end
+	RETURN 1
+END
+GO
+
+IF OBJECT_ID ('SchemaLicitacao.CheckUtilizador', 'FS') IS NOT NULL
+	DROP function SchemaLicitacao.CheckUtilizador;
+GO
+Create FUNCTION SchemaLicitacao.CheckUtilizador(@NuserID int)
+returns int
+as
+Begin
+	Declare @msgErro varchar(500)
+	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@NuserID)
+	begin
+		set @msgErro = 'O utilizador não se encontra nos registos.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 0
+	end
+	RETURN 1
+END
+GO
