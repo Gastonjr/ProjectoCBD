@@ -121,7 +121,13 @@ BEGIN
 	
 
 	--Procurar o valor da licitação actual de um produto.
-	if exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
+	if not exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
+	begin
+		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
+		set @NLiciValMax=@licitaValMax
+		set @FuserID=@NuserID
+	end
+	else
 	begin
 		select @valActual= MAX(LicitacaoValorActual), @valActualMax=LicitacaoValorMax 
 			from Licitacao where LicitacaoProdutoID=@prodID
@@ -170,12 +176,7 @@ BEGIN
 			end
 		end
 	end
-	else
-	begin
-		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
-		set @NLiciValMax=@licitaValMax
-		set @FuserID=@NuserID
-	end
+	
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 			values(@Fuserid, @prodid,@NLiciValMax, @NLiciVal,Getdate())
 	
