@@ -58,7 +58,7 @@ BEGIN
 	DECLARE @msgErro varchar(500)
 	if datediff(s,getdate(),@ProdDataLimite)<0/*verifica se já passou o ultimo segundo do leilão*/
 	begin
-		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @ProdDataLimite)
+		set @msgErro = 'A data limite do leilão é inválida: ' + CONVERT(VARCHAR, @ProdDataLimite)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
