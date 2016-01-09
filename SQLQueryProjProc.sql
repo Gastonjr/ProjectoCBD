@@ -91,8 +91,8 @@ BEGIN
 	DECLARE @valActualMax decimal(9,2)
 	DECLARE @prodDate datetime
 	DECLARE @ProdVal DECIMAL(9,2)
-	DECLARE @NLiciVal DECIMAL(9,2)
-	DECLARE @NLiciValMax DECIMAL(9,2)
+	DECLARE @FLiciVal DECIMAL(9,2)
+	DECLARE @FLiciValMax DECIMAL(9,2)
 	DECLARE @FuserID int
 	Set nocount on
 
@@ -123,8 +123,8 @@ BEGIN
 	--Procurar o valor da licitação actual de um produto.
 	if not exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
 	begin
-		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
-		set @NLiciValMax=@licitaValMax
+		select @FLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
+		set @FLiciValMax=@licitaValMax
 		set @FuserID=@NuserID
 	end
 	else
@@ -133,9 +133,9 @@ BEGIN
 			from Licitacao where LicitacaoProdutoID=@prodID
 			group by LicitacaoValorMax
 
-		if @licitaValMax < @valActual
+		if @licitaValMax <= @valActual
 		begin
-			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @licitaValMax) +' < '+ CONVERT(VARCHAR, @valActual)
+			set @msgErro = 'A licitação é menor ou igual ao valor actual: ' + CONVERT(VARCHAR, @licitaValMax) +' < '+ CONVERT(VARCHAR, @valActual)
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
@@ -156,29 +156,29 @@ BEGIN
 
 		if(@valActualMax < @licitaValMax)
 		begin
-			set @NLiciVal=(@licitaValMax+0.01)
-			set @NLiciValMax=@valActualMax
+			set @FLiciVal=(@licitaValMax+0.01)
+			set @FLiciValMax=@valActualMax
 			set @FuserID=@VuserID
 		end
 		else
 		begin
 			if(@valActualMax=@licitaValMax)
 			begin
-				set @NLiciVal=@valActualMax
-				set @NLiciValMax=@valActualMax
+				set @FLiciVal=@valActualMax
+				set @FLiciValMax=@valActualMax
 				set @FuserID=@VuserID
 			end
 			else
 			begin
-				set @NLiciVal=(@valActualMax+0.01)
-				set @NLiciValMax=@licitaValMax
+				set @FLiciVal=(@valActualMax+0.01)
+				set @FLiciValMax=@licitaValMax
 				set @FuserID=@NuserID
 			end
 		end
 	end
 	
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
-			values(@Fuserid, @prodid,@NLiciValMax, @NLiciVal,Getdate())
+			values(@Fuserid, @prodid,@FLiciValMax, @FLiciVal,Getdate())
 	
 END
 Go
