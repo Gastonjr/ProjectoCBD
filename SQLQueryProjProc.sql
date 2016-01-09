@@ -139,20 +139,7 @@ BEGIN
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
-
-		if(@valActual!=@licitaValMax and @licitaValMax != (@valActual+0.01))
-		begin
-		Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
-			values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01))
-		end
-		else
-		begin
-			if()
-			begin
-				Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
-					values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01))
-			end
-		end
+		--Corte e costura
 
 		if(@valActualMax < @licitaValMax)
 		begin
@@ -167,6 +154,8 @@ BEGIN
 				set @FLiciVal=@valActualMax
 				set @FLiciValMax=@valActualMax
 				set @FuserID=@VuserID
+				Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+					values(@NuserID, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
 			end
 			else
 			begin
@@ -175,8 +164,8 @@ BEGIN
 				set @FuserID=@NuserID
 			end
 		end
-	end
 	
+	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 			values(@Fuserid, @prodid,@FLiciValMax, @FLiciVal,Getdate())
 	
