@@ -95,31 +95,36 @@ BEGIN
 	DECLARE @FLiciValMax DECIMAL(9,2)
 	DECLARE @FuserID int
 	Set nocount on
-
-	if SchemaLicitacao.CheckProduto(@prodID)=0
-	begin
-		return
+	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
+	begin 
+		set @msgErro = 'O produto não se encontra nos registos.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 
 	end
 
-	if SchemaLicitacao.CheckUtilizador(@NuserID)=0
-	BEGIN
-		RETURN
-	END
+	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@NuserID)
+	begin
+		set @msgErro = 'O utilizador não se encontra nos registos.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 
+	end
 
 	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
 	
-	if SchemaLicitacao.CheckDataLeilao(@prodDate)=0
+	if datediff(s,getdate(),@prodDate)<0
 	begin
-		return
+		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
+		RAISERROR(@msgErro,16,1)
+		RETURN 
 	end
 
-	if SchemaLicitacao.CheckDataLeilao(@ProdVal,@licitaValMax)=0
+	if (@ProdVal>@licitaValMax)
 	begin
-		return
+		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 
 	end
 	
-	
-
 	--Procurar o valor da licitação actual de um produto.
 	if not exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
 	begin
@@ -172,6 +177,13 @@ BEGIN
 END
 Go
 --Teste do procedimento procLicitarProd--
+/*
+--Prod 20 autor 10 valormin 47.06
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+*/
 --****************** procedimento que funcionam na fase 2 *************************---
 
 IF OBJECT_ID ('SchemaUtilizador.ModificarPassword', 'P') IS NOT NULL
