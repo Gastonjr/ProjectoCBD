@@ -270,10 +270,16 @@ BEGIN
 		RETURN
 	end
 
-	select p.*, p.ProdutoValorMinVenda as 'Produto atual Vendido ' from SchemaUtilizador.Seguidor s join   SchemaProduto.Produto p on(s.SeguidorSeguidorID= s.SeguidorTableId) 
+	select p.*, p.ProdutoValorMinVenda as 'Produto atual Vendido ' from SchemaUtilizador.Seguidor s join   SchemaProduto.Produto p on(s.SeguidorSeguidorID= @utilizadorSeguidorID) 
 	where  p.ProdutoUtilizadorID= s.SeguidorTableId;
 
-
+if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
 
 
 ------*** Procedimento que mostra as licitações ativas  de um determinado utilizador**------------------------------------------------
@@ -313,7 +319,7 @@ BEGIN
 END
 GO
 
----------------------***procedimento que lista todos produtos vendidos por um utilizador***-----------------------------------------------------
+---------------------***procedimento que devolve uma lista todos produtos vendidos por um utilizador***-----------------------------------------------------
 
 --select UtilizadorId, UtilizadorNome  from SchemaUtilizador.Utilizador, SchemaProduto.Produto where ProdutoUtilizadorID=2;
 --select UtilizadorId, UtilizadorNome from SchemaUtilizador.Utilizador, SchemaUtilizador.Compra where CompraClassificacao= null;
