@@ -191,7 +191,7 @@ execute SchemaLicitacao.procLicitarProd 5,20,731.53
 --****************** procedimento que funcionam na fase 2 *************************---
 
 ---procedimento que modifica a password de um utilizador , recebendo a pass antiga para nova
-IF OBJECT_ID ('SchemaUtilizador.ModificarPassword', 'ProcPassword') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.ModificarPassword', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ModificarPassword;
 GO
 create proc SchemaUtilizador.ModificarPassword
@@ -225,7 +225,7 @@ GO
 
 ---***procedimento que devolve uma lista de produto  seguido por um determinado uttilizador***---
 
-IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'ProcProdutoSeguido') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoSeguido;
 GO
 create proc SchemaUtilizador.ProdutoSeguido
@@ -254,7 +254,7 @@ GO
 
 
 --*** Procedimento que mostra as licitações ativas  de um determinado utilizador**---
-IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActiva', 'ProcLicitacaoAtiva') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActiva', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.MostrarLicitacaoActiva;
 GO
 create proc SchemaUtilizador.MostrarLicitacaoActiva
@@ -296,7 +296,7 @@ GO
 --select UtilizadorId, UtilizadorNome from SchemaUtilizador.Utilizador, SchemaUtilizador.Compra where CompraClassificacao= null;
 --select * from SchemaLicitacao.Licitacao
 
-IF OBJECT_ID ('SchemaUtilizador.MostrarProdutoVendido', 'ProcProdutoVendido') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.MostrarProdutoVendido', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.MostrarProdutoVendido;
 GO
 create proc SchemaUtilizador.MostrarProdutoVendido
@@ -333,7 +333,7 @@ GO
 
 -------procedimento que apresenta as compras de um utilizador , que tem  uma classificação pendente--------------------------------------------
 
-IF OBJECT_ID ('SchemaUtilizador.ApresentarCompras', 'ProcApresentarCompras') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.ApresentarCompras', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ApresentarCompras;
 GO
 create proc SchemaUtilizador.ApresentarCompras
@@ -390,7 +390,7 @@ GO
 ---------------------------------procedimento que classifica a compra por um determinado utilizador---------------------------------------------------------------------
 
 
-	IF OBJECT_ID ('SchemaUtilizador.ClassificarCompra', 'ProcClassificarCompra') IS NOT NULL
+	IF OBJECT_ID ('SchemaUtilizador.ClassificarCompra', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ClassificarCompra;
 GO
 create proc SchemaUtilizador.ClassificarCompra
