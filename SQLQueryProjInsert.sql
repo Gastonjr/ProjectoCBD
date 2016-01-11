@@ -129,29 +129,29 @@ go
 --------------------------------------------------------------------------------------------------------------
 --inserção de dados da tabela Compra
 --------------------------------------------------------------------------------------------------------------
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,18,18);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,19,11);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,20,9);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,5,17);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,9,24);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,20,7);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,16,15);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,19,20);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,19,11);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,9,2);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,2,12);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,10,19);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,17,12);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,2,9);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (null,6,19);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,20,11);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,11,22);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,10,3);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,6,5);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,3,24);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (NULL,14,13);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,16,8);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,3,2);
-INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,10,13);
-INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (null,3,2);
-go 
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,18,18);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,19,11);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,20,9);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,5,17);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,9,5);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,20,7);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,16,15);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,19,20);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,19,11);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,9,2);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,2,12);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,10,19);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,17,12);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,2,9);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (null,6,19);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,20,11);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (3,11,22);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,10,3);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,6,5);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (4,3,24);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (NULL,14,13);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (1,16,8);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (2,3,2);
+--INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,10,13);
+--INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (null,3,2);
+--go 
