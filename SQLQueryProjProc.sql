@@ -217,17 +217,11 @@ create proc SchemaUtilizador.ModificarPassword
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
-	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorEmail=@username)
-	begin
-		set @msgErro = 'O username é  inválido: ' + CONVERT(VARCHAR,@username)
-		RAISERROR(@msgErro,16,1) 
-		RETURN
-	end
 	if  not exists (select 1 from SchemaUtilizador.Utilizador 
 		where UtilizadorEmail=@username and  UtilizadorSenha= @passwordAntiga)
 		/*verifica se existe a passworda antiga */
 	begin
-		set @msgErro = 'A password antiga é inválida: ' + CONVERT(VARCHAR,@passwordAntiga)
+		set @msgErro = 'Password/Username inválido: ' + CONVERT(VARCHAR,@passwordAntiga)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -245,21 +239,20 @@ GO
 IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoSeguido;
 GO
-create proc SchemaUtilizador.ProdutoSeguido
-		(@utilizadorID int )
+create proc SchemaUtilizador.ProdutoSeguido(@utilizadorID int )
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = 'não existe o produto seguido por utilizador ' + CONVERT(int ,@utilizadorID)
+		set @msgErro = 'O utilizador não existe. ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
 	select SeguirProdutoProdutoId from SchemaUtilizador.SeguirProduto 
-		where SeguirProdutoUtilizadorID=@utilizadorID;	
+			where SeguirProdutoUtilizadorID=@utilizadorID;	
 	
 	if @@ERROR <>0
 	begin
@@ -288,9 +281,9 @@ BEGIN
 	end
 
 	select p.*, p.ProdutoValorMinVenda as 'Produto atual Vendido ' from SchemaUtilizador.Seguidor s join   SchemaProduto.Produto p on(s.SeguidorSeguidorID= @utilizadorSeguidorID) 
-	where  p.ProdutoUtilizadorID= s.SeguidorTableId;
+		where  p.ProdutoUtilizadorID= s.SeguidorTableId;
 
-if @@ERROR <>0
+	if @@ERROR <>0
 	begin
 		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
 		RAISERROR (@msgErro, 16,1)
