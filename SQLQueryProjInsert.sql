@@ -79,8 +79,9 @@ INSERT INTO SchemaProduto.Produto([ProdutoNome],[ProdutoDescricao],[ProdutoValor
 --inserção de dados da Licitação--
 ------------------------------------------------------------------------------------------------------
 GO
+--select * from SchemaLicitacao.Licitacao
 execute SchemaLicitacao.procLicitarProd 5,20,731.53
-execute SchemaLicitacao.procLicitarProd 6,12,479.25
+execute SchemaLicitacao.procLicitarProd 6,12,479.25 
 execute SchemaLicitacao.procLicitarProd 17,12,201.77
 execute SchemaLicitacao.procLicitarProd 16,11,168.33
 execute SchemaLicitacao.procLicitarProd 16,3,989.54
