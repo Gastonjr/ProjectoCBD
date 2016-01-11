@@ -77,7 +77,7 @@ Create table SchemaUtilizador.SeguirProduto (
 
 Create table SchemaUtilizador.Compra(
 	CompraId int identity(1,1) not null,
-	CompraClassificacao int not null,
+	CompraClassificacao int,
 	CompraLicitacaoID int not null,
 	CompraProdutoID int not null
 );
