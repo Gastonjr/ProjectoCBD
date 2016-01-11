@@ -134,9 +134,9 @@ BEGIN
 	end
 	else
 	begin
-		select @valActual= MAX(LicitacaoValorActual), @valActualMax=LicitacaoValorMax 
+		select TOP 1 @valActual= LicitacaoValorActual, @valActualMax=LicitacaoValorMax 
 			from Licitacao where LicitacaoProdutoID=@prodID
-			group by LicitacaoValorMax
+			Order by LicitacaoValorActual Desc
 
 		if @licitaValMax <= @valActual
 		begin
@@ -169,7 +169,6 @@ BEGIN
 				set @FuserID=@NuserID
 			end
 		end
-	
 	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 			values(@Fuserid, @prodid,@FLiciValMax, @FLiciVal,Getdate())
