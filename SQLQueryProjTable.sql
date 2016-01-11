@@ -33,7 +33,7 @@ Create table SchemaUtilizador.Utilizador (
 	UtilizadorEmail varchar(255)
 	constraint CK_Email
 		check (UtilizadorEmail like '%@%.%') ,
-	UtilizadorDataRegisto date ,
+	UtilizadorDataRegisto datetime not null default getDate(),
 	UtilizadorDataNascimento date,
 	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone

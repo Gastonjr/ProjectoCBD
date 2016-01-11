@@ -58,7 +58,7 @@ BEGIN
 	DECLARE @msgErro varchar(500)
 	if datediff(s,getdate(),@ProdDataLimite)<0/*verifica se já passou o ultimo segundo do leilão*/
 	begin
-		set @msgErro = 'Já passou o tempo para licitar.' + CONVERT(VARCHAR, @ProdDataLimite)
+		set @msgErro = 'A data limite do leilão é inválida: ' + CONVERT(VARCHAR, @ProdDataLimite)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -91,98 +91,101 @@ BEGIN
 	DECLARE @valActualMax decimal(9,2)
 	DECLARE @prodDate datetime
 	DECLARE @ProdVal DECIMAL(9,2)
-	DECLARE @NLiciVal DECIMAL(9,2)
-	DECLARE @NLiciValMax DECIMAL(9,2)
+	DECLARE @FLiciVal DECIMAL(9,2)
+	DECLARE @FLiciValMax DECIMAL(9,2)
 	DECLARE @FuserID int
 	Set nocount on
 	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
 	begin 
 		set @msgErro = 'O produto não se encontra nos registos.'
 		RAISERROR(@msgErro,16,1)
-		RETURN
-	end
-
-	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
-
-	if datediff(s,getdate(),@prodDate)<0
-	begin
-		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
-		RAISERROR(@msgErro,16,1)
-		RETURN
-	end
-
-	if (@ProdVal>@licitaValMax)
-	begin
-		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
-		RAISERROR(@msgErro,16,1)
-		RETURN
+		RETURN 
 	end
 
 	if not exists (Select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@NuserID)
 	begin
 		set @msgErro = 'O utilizador não se encontra nos registos.'
 		RAISERROR(@msgErro,16,1)
-		RETURN
+		RETURN 
 	end
 
-	--Procurar o valor da licitação actual de um produto.
-	if exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
+	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
+	
+	if datediff(s,getdate(),@prodDate)<0
 	begin
-		select @valActual= MAX(LicitacaoValorActual), @valActualMax=LicitacaoValorMax 
-			from Licitacao where LicitacaoProdutoID=@prodID
-			group by LicitacaoValorMax
+		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
+		RAISERROR(@msgErro,16,1)
+		RETURN 
+	end
 
-		if @licitaValMax < @valActual
+	if (@ProdVal>@licitaValMax)
+	begin
+		set @msgErro = 'O valor da licitação é menor que o valor mínimo.'
+		RAISERROR(@msgErro,16,1)
+		RETURN 
+	end
+	
+	--Procurar o valor da licitação actual de um produto.
+	if not exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
+	begin
+		select @FLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
+		set @FLiciValMax=@licitaValMax
+		set @FuserID=@NuserID
+	end
+	else
+	begin
+		select TOP 1 @valActual= LicitacaoValorActual, @valActualMax=LicitacaoValorMax 
+			from Licitacao where LicitacaoProdutoID=@prodID
+			Order by LicitacaoValorActual Desc
+
+		if @licitaValMax <= @valActual
 		begin
-			set @msgErro = 'A licitação é menor do que o valor actual: ' + CONVERT(VARCHAR, @licitaValMax) +' < '+ CONVERT(VARCHAR, @valActual)
+			set @msgErro = 'A licitação é menor ou igual ao valor actual: ' + CONVERT(VARCHAR, @licitaValMax) +' < '+ CONVERT(VARCHAR, @valActual)
 			RAISERROR(@msgErro,16,1)
 			RETURN 
 		end
-		if(@valActual!=@valActualMax and @valActualMax != (@valActual+0.01))
-		begin
-		Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual)
-			values(@Nuserid, @prodid,@licitaValMax, (@valActual+0.01))
-		end
-		else
-		begin
-			set @msgErro = 'Bem vindo aos 0.01'
-			RAISERROR(@msgErro,16,1)
-			RETURN
-		end
+		--Corte e costura
 
 		if(@valActualMax < @licitaValMax)
 		begin
-			set @NLiciVal=(@licitaValMax+0.01)
-			set @NLiciValMax=@valActualMax
+			set @FLiciVal=(@licitaValMax+0.01)
+			set @FLiciValMax=@valActualMax
 			set @FuserID=@VuserID
 		end
 		else
 		begin
 			if(@valActualMax=@licitaValMax)
 			begin
-				set @NLiciVal=@valActualMax
-				set @NLiciValMax=@valActualMax
+				set @FLiciVal=@valActualMax
+				set @FLiciValMax=@valActualMax
 				set @FuserID=@VuserID
+				Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+					values(@NuserID, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
 			end
 			else
 			begin
-				set @NLiciVal=(@valActualMax+0.01)
-				set @NLiciValMax=@licitaValMax
+				set @FLiciVal=(@valActualMax+0.01)
+				set @FLiciValMax=@licitaValMax
 				set @FuserID=@NuserID
 			end
 		end
 	end
-	else
-	begin
-		select @NLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
-		set @NLiciValMax=@licitaValMax
-		set @FuserID=@NuserID
-	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
-			values(@Fuserid, @prodid,@NLiciValMax, @NLiciVal,Getdate())
+			values(@Fuserid, @prodid,@FLiciValMax, @FLiciVal,Getdate())
 	
 END
 Go
+--Teste do procedimento procLicitarProd--
+/*
+--Prod 20 autor 10 valormin 47.06
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 5,20,731.53
+*/
+
+
+
 -------------------------------------------------------------------------------------------------------------------------------------------------
 --------------------------fase 2 continuação------------------------------------------
 --****************** procedimento que funcionam na fase 2 *************************---
