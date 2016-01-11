@@ -262,10 +262,10 @@ BEGIN
 END
 GO
 
----------*** Procedimento que devolve uma lista com produtos actualemnte a venda por um utilzador seguido***-------------------------------- 
+---------*** Procedimento que devolve uma lista com produtos actualemnte a venda por um utilizador seguido***-------------------------------- 
 
-IF OBJECT_ID ('SchemaUtilizadorSeguidor.ProdutoVendaActual', 'P') IS NOT NULL
-	DROP proc SchemaUtilizadorSeguidor.ProdutoVendaActual;
+IF OBJECT_ID ('SchemaUtilizador.ProdutoVendaActual', 'P') IS NOT NULL
+	DROP proc SchemaUtilizador.ProdutoVendaActual;
 GO
 create proc SchemaUtilizador.ProdutoVendaActual
 		(@utilizadorSeguidorID int )
@@ -275,14 +275,13 @@ BEGIN
 
 	if  not exists (select 1 from SchemaUtilizador.Seguidor where SeguidorSeguidorID=@utilizadorSeguidorID  )
 	begin
-		set @msgErro = ' não existe o utilizador a seguir outro' + CONVERT(int ,@utilizadorSeguidorID)
+		set @msgErro = 'Este utilizador não está a seguir ninguém ' + CONVERT(int ,@utilizadorSeguidorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-	select p.*, p.ProdutoValorMinVenda as 'Produto atual Vendido ' from SchemaUtilizador.Seguidor s join   SchemaProduto.Produto p on(s.SeguidorSeguidorID= @utilizadorSeguidorID) 
-		where  p.ProdutoUtilizadorID= s.SeguidorTableId;
-
+	select p.* from  SchemaProduto.Produto p join SchemaUtilizador.Seguidor s   on( s.SeguidorSeguidoID= ProdutoUtilizadorID) 
+			where  SeguidorSeguidorID=12;
 	if @@ERROR <>0
 	begin
 		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
