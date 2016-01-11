@@ -326,3 +326,106 @@ BEGIN
 	end
 END
 GO
+
+
+-------procedimento que apresenta as compras de um utilizador , que tem  uma classificação pendente--------------------------------------------
+
+IF OBJECT_ID ('SchemaUtilizador.ApresentarCompras', 'ProcApresentarCompras') IS NOT NULL
+	DROP proc SchemaUtilizador.ApresentarCompras;
+GO
+create proc SchemaUtilizador.ApresentarCompras
+		(@utilizadorID int)
+as
+BEGIN
+
+	DECLARE @produtoID int
+	DECLARE @compraID int 
+	DECLARE @msgErro varchar(500)
+
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
+	begin
+		set @msgErro = 'não existe o utilizador   ' + CONVERT(int ,@utilizadorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+
+	if  not exists (select 1 from SchemaProduto.Produto where ProdutoUtilizadorID=@utilizadorID  )
+	begin
+		set @msgErro = 'não existe o utilizador inserido com  compras de produtos  ' + CONVERT(int ,@utilizadorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	
+if  not exists (select 1 from SchemaUtilizador.Compra where CompraProdutoID = @produtoID )
+	begin
+		set @msgErro = 'O não existe o produto inserido   ' + CONVERT(int ,@produtoID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	if  not exists (select 1 from SchemaUtilizador.Compra where CompraId= @compraID )
+	begin
+		set @msgErro = 'O utilizador com  compras pendentes  ' + CONVERT(int ,@compraID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end 
+
+	select UtilizadorId, c.* from SchemaUtilizador.Utilizador, SchemaUtilizador.Compra c where c.CompraClassificacao is null;
+	
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+
+END
+
+GO
+
+
+---------------------------------procedimento que classifica a compra por um determinado utilizador---------------------------------------------------------------------
+
+
+	IF OBJECT_ID ('SchemaUtilizador.ClassificarCompra', 'ProcClassificarCompra') IS NOT NULL
+	DROP proc SchemaUtilizador.ClassificarCompra;
+GO
+create proc SchemaUtilizador.ClassificarCompra
+		(@licitacaoID int  , @compraclassificacao int )
+as
+BEGIN
+
+	DECLARE @msgErro varchar(500)
+	DECLARE @dataLimiteLeilao datetime
+	Declare @produtoID int
+	if   (@compraclassificacao >0 or @compraclassificacao<5 )
+	begin
+		set @msgErro = 'classificação é invalida ' + CONVERT(int ,@compraclassificacao)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	if  not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoId= @licitacaoID )
+	begin
+		set @msgErro = 'não existe a licitacao do  produto  ' + CONVERT(int ,@licitacaoID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	if  exists (select 1 from SchemaUtilizador.Compra where CompraLicitacaoID= @licitacaoID  )
+	begin
+		set @msgErro = ' a compra já foi classificada  ' + CONVERT(int ,@licitacaoID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	select @dataLimiteLeilao= ProdutoDataLimiteLeilao, @produtoID = LicitacaoProdutoID from SchemaLicitacao.Licitacao, SchemaProduto.Produto 
+		where LicitacaoProdutoID=ProdutoId;
+	if( datediff(s,getdate(),@dataLimiteLeilao)>0 )
+	begin
+		set @msgErro = 'o tempo  da licitacao de um produto já passou   ' + CONVERT(int ,@dataLimiteLeilao)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	
+end

@@ -54,6 +54,7 @@ Create table SchemaProduto.Produto (
 	ProdutoNome varchar(50),
 	ProdutoDescricao varchar(255),
 	ProdutoValorMinVenda decimal(9,2),
+	produtoFinal int , /*campo acrescentado*/
 	ProdutoDataLimiteLeilao dateTime,
 	ProdutoUtilizadorID int not null
 );
