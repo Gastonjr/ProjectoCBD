@@ -82,7 +82,7 @@ IF OBJECT_ID ('SchemaLicitacao.procLicitarProd', 'P') IS NOT NULL
 	DROP proc SchemaLicitacao.procLicitarProd;
 GO
 Create proc SchemaLicitacao.procLicitarProd
-			(@NuserID int, @prodID int, @licitaValMax decimal)
+			(@NuserID int, @prodID int, @licitaValMax decimal(9,2))
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
@@ -94,6 +94,7 @@ BEGIN
 	DECLARE @FLiciVal DECIMAL(9,2)
 	DECLARE @FLiciValMax DECIMAL(9,2)
 	DECLARE @FuserID int
+	Declare @VendedorID int
 	Set nocount on
 	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
 	begin 
@@ -109,8 +110,13 @@ BEGIN
 		RETURN 
 	end
 
-	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
-	
+	select @VendedorID=ProdutoUtilizadorID, @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
+	if (@VendedorID=@NuserID)
+	begin
+		set @msgErro = 'Não podes licitar no teu próprio produto. ' + CONVERT(VARCHAR, @prodDate)
+		RAISERROR(@msgErro,16,1)
+		RETURN 
+	end
 	if datediff(s,getdate(),@prodDate)<0
 	begin
 		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
@@ -126,13 +132,7 @@ BEGIN
 	end
 	
 	--Procurar o valor da licitação actual de um produto.
-	if not exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
-	begin
-		select @FLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
-		set @FLiciValMax=@licitaValMax
-		set @FuserID=@NuserID
-	end
-	else
+	if exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoProdutoID=@prodID)
 	begin
 		select TOP 1 @valActual= LicitacaoValorActual, @valActualMax=LicitacaoValorMax 
 			from Licitacao where LicitacaoProdutoID=@prodID
@@ -169,6 +169,12 @@ BEGIN
 				set @FuserID=@NuserID
 			end
 		end
+	end
+	else
+	begin
+		select @FLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
+		set @FLiciValMax=@licitaValMax
+		set @FuserID=@NuserID
 	end
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 			values(@Fuserid, @prodid,@FLiciValMax, @FLiciVal,Getdate())
