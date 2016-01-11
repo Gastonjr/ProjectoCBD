@@ -82,7 +82,7 @@ IF OBJECT_ID ('SchemaLicitacao.procLicitarProd', 'P') IS NOT NULL
 	DROP proc SchemaLicitacao.procLicitarProd;
 GO
 Create proc SchemaLicitacao.procLicitarProd
-			(@NuserID int, @prodID int, @licitaValMax decimal)
+			(@NuserID int, @prodID int, @licitaValMax decimal(9,2))
 as
 BEGIN
 	DECLARE @msgErro varchar(500)
@@ -94,6 +94,7 @@ BEGIN
 	DECLARE @FLiciVal DECIMAL(9,2)
 	DECLARE @FLiciValMax DECIMAL(9,2)
 	DECLARE @FuserID int
+	Declare @VendedorID int
 	Set nocount on
 	if not exists (Select 1 from SchemaProduto.Produto where ProdutoId=@prodID)
 	begin 
@@ -109,8 +110,13 @@ BEGIN
 		RETURN 
 	end
 
-	select @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
-	
+	select @VendedorID=ProdutoUtilizadorID, @prodDate = ProdutoDataLimiteLeilao,@ProdVal=ProdutoValorMinVenda from SchemaProduto.Produto where @prodid=ProdutoId
+	if (@VendedorID=@NuserID)
+	begin
+		set @msgErro = 'Não podes licitar no teu próprio produto. ' + CONVERT(VARCHAR, @VendedorID)
+		RAISERROR(@msgErro,16,1)
+		RETURN 
+	end
 	if datediff(s,getdate(),@prodDate)<0
 	begin
 		set @msgErro = 'Já passou o tempo para licitar. ' + CONVERT(VARCHAR, @prodDate)
@@ -126,7 +132,7 @@ BEGIN
 	end
 	
 	--Procurar o valor da licitação actual de um produto.
-	if not exists (select MAX(LicitacaoValorActual) from Licitacao where LicitacaoProdutoID=@prodID)
+	if not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoProdutoID=@prodID)
 	begin
 		select @FLiciVal=ProdutoValorMinVenda from SchemaProduto.Produto where ProdutoId = @prodID
 		set @FLiciValMax=@licitaValMax
@@ -134,10 +140,15 @@ BEGIN
 	end
 	else
 	begin
-		select TOP 1 @valActual= LicitacaoValorActual, @valActualMax=LicitacaoValorMax 
+		select TOP 1 @valActual= LicitacaoValorActual, @valActualMax=LicitacaoValorMax, @VuserID=LicitacaoUtilizadorID 
 			from Licitacao where LicitacaoProdutoID=@prodID
 			Order by LicitacaoValorActual Desc
-
+		if @NuserID=@VuserID
+		begin
+			set @msgErro = 'Já licitaste neste produto: ' + CONVERT(VARCHAR, @prodID)
+			RAISERROR(@msgErro,16,1)
+			RETURN 
+		end
 		if @licitaValMax <= @valActual
 		begin
 			set @msgErro = 'A licitação é menor ou igual ao valor actual: ' + CONVERT(VARCHAR, @licitaValMax) +' < '+ CONVERT(VARCHAR, @valActual)
@@ -146,11 +157,13 @@ BEGIN
 		end
 		--Corte e costura
 
-		if(@valActualMax < @licitaValMax)
+		if(@valActualMax > @licitaValMax)
 		begin
 			set @FLiciVal=(@licitaValMax+0.01)
 			set @FLiciValMax=@valActualMax
 			set @FuserID=@VuserID
+			Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+					values(@NuserID, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
 		end
 		else
 		begin
@@ -159,8 +172,11 @@ BEGIN
 				set @FLiciVal=@valActualMax
 				set @FLiciValMax=@valActualMax
 				set @FuserID=@VuserID
-				Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
-					values(@NuserID, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
+				if(@valActual<(@valActualMax-0.01))
+				begin
+					Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
+						values(@NuserID, @prodid,@licitaValMax, (@valActual+0.01),Getdate())
+				end
 			end
 			else
 			begin
@@ -170,6 +186,7 @@ BEGIN
 			end
 		end
 	end
+	
 	Insert into SchemaLicitacao.Licitacao(LicitacaoUtilizadorID,LicitacaoProdutoID,LicitacaoValorMax,LicitacaoValorActual,LicitacaoData)
 			values(@Fuserid, @prodid,@FLiciValMax, @FLiciVal,Getdate())
 	
@@ -179,9 +196,9 @@ Go
 /*
 --Prod 20 autor 10 valormin 47.06
 execute SchemaLicitacao.procLicitarProd 5,20,731.53
-execute SchemaLicitacao.procLicitarProd 5,20,731.53
-execute SchemaLicitacao.procLicitarProd 5,20,731.53
-execute SchemaLicitacao.procLicitarProd 5,20,731.53
+execute SchemaLicitacao.procLicitarProd 6,20,531.53
+execute SchemaLicitacao.procLicitarProd 10,20,731.53
+execute SchemaLicitacao.procLicitarProd 6,20,731.53
 */
 
 
