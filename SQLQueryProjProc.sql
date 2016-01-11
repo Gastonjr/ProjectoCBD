@@ -304,22 +304,23 @@ BEGIN
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = 'não existe licitação ativa de um utilizador ' + CONVERT(int ,@utilizadorID)
+		set @msgErro = 'O Utilizador não existe ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
 
-	if  not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoUtilizadorID=@utilizadorID)
+	if  not exists (select 1 from SchemaLicitacao.Licitacao, SchemaProduto.Produto where LicitacaoUtilizadorID=@utilizadorID 
+					and datediff(s,GETDATE(),ProdutoDataLimiteLeilao)  > 0) 
 	begin
-		set @msgErro = 'O utilizador não licitou ' + CONVERT(int ,@utilizadorID)
+		set @msgErro = 'O utilizador não tem licitações activas ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-	select l.*from SchemaLicitacao.Licitacao l , SchemaProduto.Produto p
-		where l.LicitacaoProdutoID= p.ProdutoId and p.ProdutoDataLimiteLeilao > GETDATE() and l.LicitacaoUtilizadorID= @utilizadorID;
-	
+	select ProdutoId, Max(LicitacaoValorActual) as 'Valor actual' from SchemaLicitacao.Licitacao l , SchemaProduto.Produto p
+		where l.LicitacaoProdutoID= p.ProdutoId and datediff(s,GETDATE(),p.ProdutoDataLimiteLeilao)  > 0 and l.LicitacaoUtilizadorID= 20
+		group by ProdutoId
 	if @@ERROR <>0
 	begin
 		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
@@ -327,7 +328,8 @@ BEGIN
 	end
 END
 GO
-
+--exec SchemaUtilizador.MostrarLicitacaoActiva 20;
+go
 ---------------------***procedimento que devolve uma lista todos produtos vendidos por um utilizador***-----------------------------------------------------
 
 --select UtilizadorId, UtilizadorNome  from SchemaUtilizador.Utilizador, SchemaProduto.Produto where ProdutoUtilizadorID=2;
