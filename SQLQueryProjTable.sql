@@ -35,6 +35,7 @@ Create table SchemaUtilizador.Utilizador (
 		check (UtilizadorEmail like '%@%.%') ,
 	UtilizadorDataRegisto datetime not null default getDate(),
 	UtilizadorDataNascimento date,
+	UtilizadorClassificacaoMedia decimal (3,2),
 	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone
 		unique (UtilizadorTelefone )

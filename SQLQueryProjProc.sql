@@ -223,7 +223,7 @@ BEGIN
 END
 GO
 
----***procedimento que devolve uma lista de produto  seguido por um determinado uttilizador***---
+---------***procedimento que devolve uma lista de produto  seguido por um determinado uttilizador***------------------------------------
 
 IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoSeguido;
@@ -252,8 +252,31 @@ BEGIN
 END
 GO
 
+---------*** Procedimento que devolve uma lista com produtos actualemnte a venda por um utilzador seguido***-------------------------------- 
 
---*** Procedimento que mostra as licitações ativas  de um determinado utilizador**---
+IF OBJECT_ID ('SchemaUtilizadorSeguidor.ProdutoVendaActual', 'P') IS NOT NULL
+	DROP proc SchemaUtilizadorSeguidor.ProdutoVendaActual;
+GO
+create proc SchemaUtilizador.ProdutoVendaActual
+		(@utilizadorSeguidorID int )
+as
+BEGIN
+	DECLARE @msgErro varchar(500)
+
+	if  not exists (select 1 from SchemaUtilizador.Seguidor where SeguidorSeguidorID=@utilizadorSeguidorID  )
+	begin
+		set @msgErro = ' não existe o utilizador a seguir outro' + CONVERT(int ,@utilizadorSeguidorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	select p.*, p.ProdutoValorMinVenda as 'Produto atual Vendido ' from SchemaUtilizador.Seguidor s join   SchemaProduto.Produto p on(s.SeguidorSeguidorID= s.SeguidorTableId) 
+	where  p.ProdutoUtilizadorID= s.SeguidorTableId;
+
+
+
+
+------*** Procedimento que mostra as licitações ativas  de um determinado utilizador**------------------------------------------------
 IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActiva', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.MostrarLicitacaoActiva;
 GO
@@ -432,3 +455,12 @@ BEGIN
 	end
 	
 end
+
+------------------------------------Procedimento que apresenta os utilizadores com melhore classificação , nos produto vendidos -----------------------------------------------------------------------
+
+
+
+--select  max(c.CompraClassificacao) from  SchemaUtilizador.Utilizador u, SchemaProduto.Produto  p, SchemaUtilizador.Compra c
+
+--where p.ProdutoUtilizadorID= u.UtilizadorId and c.CompraProdutoID= p.ProdutoId;
+
