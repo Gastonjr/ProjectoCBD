@@ -184,13 +184,19 @@ execute SchemaLicitacao.procLicitarProd 5,20,731.53
 execute SchemaLicitacao.procLicitarProd 5,20,731.53
 execute SchemaLicitacao.procLicitarProd 5,20,731.53
 */
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------fase 2 continuação------------------------------------------
 --****************** procedimento que funcionam na fase 2 *************************---
 
-IF OBJECT_ID ('SchemaUtilizador.ModificarPassword', 'P') IS NOT NULL
+---procedimento que modifica a password de um utilizador , recebendo a pass antiga para nova
+IF OBJECT_ID ('SchemaUtilizador.ModificarPassword', 'ProcPassword') IS NOT NULL
 	DROP proc SchemaUtilizador.ModificarPassword;
 GO
 create proc SchemaUtilizador.ModificarPassword
-		(@username varchar(40), @passwordAntiga varchar(32),
+		(@username varchar(255), @passwordAntiga varchar(32),
 		@passwordNova varchar(32))
 as
 BEGIN
@@ -218,9 +224,9 @@ BEGIN
 END
 GO
 
----***procedure de uma lista de produtos seguido por um utilizador***---
+---***procedimento que devolve uma lista de produto  seguido por um determinado uttilizador***---
 
-IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'P') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'ProcProdutoSeguido') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoSeguido;
 GO
 create proc SchemaUtilizador.ProdutoSeguido
@@ -231,7 +237,7 @@ BEGIN
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = 'Id é invalido ' + CONVERT(int ,@utilizadorID)
+		set @msgErro = 'não existe o produto seguido por utilizador ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -248,11 +254,11 @@ END
 GO
 
 
---*** mostrar uma licitação que está no prazo**---
-IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActivas', 'P') IS NOT NULL
-	DROP proc SchemaUtilizador.MostrarLicitacaoActivas;
+--*** Procedimento que mostra as licitações ativas  de um determinado utilizador**---
+IF OBJECT_ID ('SchemaUtilizador.MostrarLicitacaoActiva', 'ProcLicitacaoAtiva') IS NOT NULL
+	DROP proc SchemaUtilizador.MostrarLicitacaoActiva;
 GO
-create proc SchemaUtilizador.MostrarLicitacaoActivas
+create proc SchemaUtilizador.MostrarLicitacaoActiva
 		(@utilizadorID int )
 as
 BEGIN
@@ -261,7 +267,7 @@ BEGIN
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = 'Id é invalido ' + CONVERT(int ,@utilizadorID)
+		set @msgErro = 'não existe licitação ativa de um utilizador ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
@@ -279,11 +285,48 @@ BEGIN
 	
 	if @@ERROR <>0
 	begin
-		set @msgErro = 'Falha no select com erro: ' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
 		RAISERROR (@msgErro, 16,1)
 	end
 END
 GO
 
---select * from SchemaProduto.Produto;
+---------------------***procedimento que lista todos produtos vendidos por um utilizador***-----------------------------------------------------
+
+--select UtilizadorId, UtilizadorNome  from SchemaUtilizador.Utilizador, SchemaProduto.Produto where ProdutoUtilizadorID=2;
+--select UtilizadorId, UtilizadorNome from SchemaUtilizador.Utilizador, SchemaUtilizador.Compra where CompraClassificacao= null;
 --select * from SchemaLicitacao.Licitacao
+
+IF OBJECT_ID ('SchemaUtilizador.MostrarProdutoVendido', 'ProcProdutoVendido') IS NOT NULL
+	DROP proc SchemaUtilizador.MostrarProdutoVendido;
+GO
+create proc SchemaUtilizador.MostrarProdutoVendido
+		(@utilizadorID int)
+as
+BEGIN
+
+	DECLARE @msgErro varchar(500)
+
+	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
+	begin
+		set @msgErro = 'não existe vendas de produtos por um utilizador ' + CONVERT(int ,@utilizadorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+
+	if  not exists (select 1 from SchemaProduto.Produto where ProdutoUtilizadorID=@utilizadorID )
+	begin
+		set @msgErro = 'O utilizador não vendeu produto ' + CONVERT(int ,@utilizadorID)
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+
+	select  p.*, p.ProdutoNome as 'PRODUTO VENDIDO' from SchemaUtilizador.Utilizador u, SchemaProduto.Produto p where p.ProdutoUtilizadorID= u.UtilizadorId and p.ProdutoUtilizadorID= @utilizadorID ;
+	if @@ERROR <>0
+	begin
+		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
+		RAISERROR (@msgErro, 16,1)
+	end
+END
+GO
