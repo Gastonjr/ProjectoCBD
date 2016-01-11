@@ -387,34 +387,13 @@ BEGIN
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
 	begin
-		set @msgErro = 'não existe o utilizador   ' + CONVERT(int ,@utilizadorID)
+		set @msgErro = 'O utilizador não existe ' + CONVERT(int ,@utilizadorID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
-
-	if  not exists (select 1 from SchemaProduto.Produto where ProdutoUtilizadorID=@utilizadorID  )
-	begin
-		set @msgErro = 'não existe o utilizador inserido com  compras de produtos  ' + CONVERT(int ,@utilizadorID)
-		RAISERROR(@msgErro,16,1) 
-		RETURN
-	end
-	
-if  not exists (select 1 from SchemaUtilizador.Compra where CompraProdutoID = @produtoID )
-	begin
-		set @msgErro = 'O não existe o produto inserido   ' + CONVERT(int ,@produtoID)
-		RAISERROR(@msgErro,16,1) 
-		RETURN
-	end
-
-	if  not exists (select 1 from SchemaUtilizador.Compra where CompraId= @compraID )
-	begin
-		set @msgErro = 'O utilizador com  compras pendentes  ' + CONVERT(int ,@compraID)
-		RAISERROR(@msgErro,16,1) 
-		RETURN
-	end 
-
-	select UtilizadorId, c.* from SchemaUtilizador.Utilizador, SchemaUtilizador.Compra c where c.CompraClassificacao is null;
+	select UtilizadorId, c.* from SchemaUtilizador.Utilizador join SchemaLicitacao.Licitacao on LicitacaoUtilizadorID=UtilizadorId
+		join SchemaUtilizador.Compra c on LicitacaoId=c.CompraLicitacaoID where c.CompraClassificacao is null;
 	
 	if @@ERROR <>0
 	begin
@@ -425,7 +404,8 @@ if  not exists (select 1 from SchemaUtilizador.Compra where CompraProdutoID = @p
 END
 
 GO
-
+--exec SchemaUtilizador.ApresentarCompras 17;
+--go
 
 ---------------------------------procedimento que classifica a compra por um determinado utilizador---------------------------------------------------------------------
 
