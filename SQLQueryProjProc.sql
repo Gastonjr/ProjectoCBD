@@ -443,7 +443,7 @@ BEGIN
 	end
 	update SchemaUtilizador.Compra set CompraClassificacao=@compraclassificacao where CompraLicitacaoID=@licitacaoID
 end
-
+GO
 ------------------------------------Procedimento que apresenta os utilizadores com melhore classificação , nos produto vendidos -----------------------------------------------------------------------
 IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificacao', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificacao;
@@ -451,16 +451,32 @@ GO
 create proc SchemaUtilizador.UtilizadoresMelhorClassificacao
 as
 BEGIN
-	PRINT 'POR FAZER'
+	DECLARE @msgErro varchar(500)
+	if  not exists (select 1 from SchemaUtilizador.vUtilizadoresMelhorClassificao )
+	begin
+		set @msgErro = 'Não foram ainda classificadas compras.'
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	select * from SchemaUtilizador.vUtilizadoresMelhorClassificao
 END
+GO
 IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificacaoMes', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificacaoMes;
 GO
 create proc SchemaUtilizador.UtilizadoresMelhorClassificacaoMes
 as
 BEGIN
-	PRINT 'POR FAZER'
+	DECLARE @msgErro varchar(500)
+	if  not exists (select 1 from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes )
+	begin
+		set @msgErro = 'As compras deste mes ainda nao foram classificadas.'
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
 END
+GO
 --select  max(c.CompraClassificacao) from  SchemaUtilizador.Utilizador u, SchemaProduto.Produto  p, SchemaUtilizador.Compra c
 --	where p.ProdutoUtilizadorID= u.UtilizadorId and c.CompraProdutoID= p.ProdutoId;
 
