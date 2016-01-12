@@ -458,7 +458,7 @@ BEGIN
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-	select * from SchemaUtilizador.vUtilizadoresMelhorClassificao
+	select Top 10 * from SchemaUtilizador.vUtilizadoresMelhorClassificao
 END
 GO
 IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificacaoMes', 'P') IS NOT NULL
@@ -474,7 +474,7 @@ BEGIN
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-	select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
+	select Top 10 * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
 END
 GO
 --select  max(c.CompraClassificacao) from  SchemaUtilizador.Utilizador u, SchemaProduto.Produto  p, SchemaUtilizador.Compra c
