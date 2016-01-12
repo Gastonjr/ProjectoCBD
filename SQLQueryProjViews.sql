@@ -39,7 +39,7 @@ IF OBJECT_ID ('SchemaUtilizador.vUtilizadoresMelhorClassificação', 'V') IS NOT N
 GO
 create view SchemaUtilizador.vUtilizadoresMelhorClassificação
 as
-	select UtilizadorId , AVG(CompraClassificacao) as 'Classificao Media'  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao
+	select Top 10 UtilizadorId , AVG(CompraClassificacao) as 'Classificao Media'  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao
 	where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId
 	group by UtilizadorId;
 Go
@@ -49,7 +49,7 @@ IF OBJECT_ID ('SchemaUtilizador.vUtilizadoresMelhorClassificaoMes', 'V') IS NOT 
 GO
 create view SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
 as
-	select UtilizadorId , AVG(CompraClassificacao) as 'Classificao Media'  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao, SchemaProduto.Produto
+	select Top 10 UtilizadorId , AVG(CompraClassificacao) as 'Classificao Media'  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao, SchemaProduto.Produto
 	where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId and DATEDIFF(m,ProdutoDataLimiteLeilao,GETDATE())>1 and LicitacaoProdutoID=ProdutoId
 	group by UtilizadorId;
 Go
