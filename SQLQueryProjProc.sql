@@ -343,7 +343,6 @@ create proc SchemaUtilizador.MostrarProdutoVendido
 		(@utilizadorID int)
 as
 BEGIN
-
 	DECLARE @msgErro varchar(500)
 
 	if  not exists (select 1 from SchemaUtilizador.Utilizador where UtilizadorId=@utilizadorID)
@@ -353,7 +352,6 @@ BEGIN
 		RETURN
 	end
 
-
 	if  not exists (select 1 from SchemaProduto.Produto where ProdutoUtilizadorID=@utilizadorID )
 	begin
 		set @msgErro = 'O utilizador não vendeu produto ' + CONVERT(int ,@utilizadorID)
@@ -362,6 +360,7 @@ BEGIN
 	end
 
 	select  p.*, p.ProdutoNome as 'PRODUTO VENDIDO' from SchemaUtilizador.Utilizador u, SchemaProduto.Produto p where p.ProdutoUtilizadorID= u.UtilizadorId and p.ProdutoUtilizadorID= @utilizadorID ;
+	
 	if @@ERROR <>0
 	begin
 		set @msgErro = 'Falha no select com erro:' + CONVERT(VARCHAR, ERROR_MESSAGE())
@@ -421,36 +420,28 @@ BEGIN
 	DECLARE @msgErro varchar(500)
 	DECLARE @dataLimiteLeilao datetime
 	Declare @produtoID int
+	DECLARE @ClassificaoCheck int
 	if   (@compraclassificacao >0 or @compraclassificacao<5 )
 	begin
-		set @msgErro = 'classificação é invalida ' + CONVERT(int ,@compraclassificacao)
+		set @msgErro = 'Classificação inválida ' + CONVERT(int ,@compraclassificacao)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
 
 	if  not exists (select 1 from SchemaLicitacao.Licitacao where LicitacaoId= @licitacaoID )
 	begin
-		set @msgErro = 'não existe a licitacao do  produto  ' + CONVERT(int ,@licitacaoID)
+		set @msgErro = 'Não existe a licitacao do  produto  ' + CONVERT(int ,@licitacaoID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-
-	if  exists (select 1 from SchemaUtilizador.Compra where CompraLicitacaoID= @licitacaoID  )
+	select @ClassificaoCheck=CompraClassificacao from SchemaUtilizador.Compra where CompraLicitacaoID=@licitacaoID
+	if  @ClassificaoCheck is not null
 	begin
-		set @msgErro = ' a compra já foi classificada  ' + CONVERT(int ,@licitacaoID)
+		set @msgErro = 'A compra já foi classificada ' + CONVERT(int ,@licitacaoID)
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-
-	select @dataLimiteLeilao= ProdutoDataLimiteLeilao, @produtoID = LicitacaoProdutoID from SchemaLicitacao.Licitacao, SchemaProduto.Produto 
-		where LicitacaoProdutoID=ProdutoId;
-	if( datediff(s,getdate(),@dataLimiteLeilao)>0 )
-	begin
-		set @msgErro = 'o tempo  da licitacao de um produto já passou   ' + CONVERT(int ,@dataLimiteLeilao)
-		RAISERROR(@msgErro,16,1) 
-		RETURN
-	end
-	
+	update SchemaUtilizador.Compra set CompraClassificacao=@compraclassificacao where CompraLicitacaoID=@licitacaoID
 end
 
 ------------------------------------Procedimento que apresenta os utilizadores com melhore classificação , nos produto vendidos -----------------------------------------------------------------------
