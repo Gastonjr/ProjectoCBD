@@ -1,9 +1,8 @@
-
 ---criação de views---
 Use CBDLeiloes
 Go
 IF OBJECT_ID ('SchemaProduto.vUtilizadorProvendoAvenda', 'V') IS NOT NULL
-	DROP Trigger SchemaProduto.vUtilizadorProvendoAvenda;
+	DROP View SchemaProduto.vUtilizadorProvendoAvenda;
 GO
 Create view SchemaProduto.vUtilizadorProvendoAvenda /*a view que lista o numero de produtos a venda no momento*/
 as 
@@ -16,7 +15,7 @@ Go
 
 --criação de view que lista o numero de produtos vendidos.
 IF OBJECT_ID ('SchemaProduto.vUtilizadorProdutosVendidos', 'V') IS NOT NULL
-	DROP Trigger SchemaProduto.vUtilizadorProdutosVendidos;
+	DROP View SchemaProduto.vUtilizadorProdutosVendidos;
 GO
 create view SchemaProduto.vUtilizadorProdutosVendidos
 as
@@ -26,7 +25,7 @@ where ProdutoUtilizadorID= UtilizadorId and DATEDIFF(S, GETDATE(), ProdutoDataLi
 Go
 
 IF OBJECT_ID ('SchemaUtilizador.vUtililizadorLicitacaoCompra', 'V') IS NOT NULL
-	DROP Trigger SchemaUtilizador.vUtililizadorLicitacaoCompra;
+	DROP View SchemaUtilizador.vUtililizadorLicitacaoCompra;
 GO
 create view SchemaUtilizador.vUtililizadorLicitacaoCompra
 as
