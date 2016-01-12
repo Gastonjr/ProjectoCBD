@@ -409,7 +409,7 @@ GO
 ---------------------------------procedimento que classifica a compra por um determinado utilizador---------------------------------------------------------------------
 
 
-	IF OBJECT_ID ('SchemaUtilizador.ClassificarCompra', 'P') IS NOT NULL
+IF OBJECT_ID ('SchemaUtilizador.ClassificarCompra', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ClassificarCompra;
 GO
 create proc SchemaUtilizador.ClassificarCompra
@@ -445,10 +445,22 @@ BEGIN
 end
 
 ------------------------------------Procedimento que apresenta os utilizadores com melhore classificação , nos produto vendidos -----------------------------------------------------------------------
-
-
-
+IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificação', 'P') IS NOT NULL
+	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificação;
+GO
+create proc SchemaUtilizador.UtilizadoresMelhorClassificação
+as
+BEGIN
+	PRINT 'POR FAZER'
+END
+IF OBJECT_ID ('SchemaUtilizador.ClassificarCompraMes', 'P') IS NOT NULL
+	DROP proc SchemaUtilizador.ClassificarCompraMes;
+GO
+create proc SchemaUtilizador.ClassificarCompraMes
+as
+BEGIN
+	PRINT 'POR FAZER'
+END
 --select  max(c.CompraClassificacao) from  SchemaUtilizador.Utilizador u, SchemaProduto.Produto  p, SchemaUtilizador.Compra c
-
---where p.ProdutoUtilizadorID= u.UtilizadorId and c.CompraProdutoID= p.ProdutoId;
+--	where p.ProdutoUtilizadorID= u.UtilizadorId and c.CompraProdutoID= p.ProdutoId;
 
