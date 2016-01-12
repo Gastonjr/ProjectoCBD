@@ -445,18 +445,18 @@ BEGIN
 end
 
 ------------------------------------Procedimento que apresenta os utilizadores com melhore classificação , nos produto vendidos -----------------------------------------------------------------------
-IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificação', 'P') IS NOT NULL
-	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificação;
+IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificacao', 'P') IS NOT NULL
+	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificacao;
 GO
-create proc SchemaUtilizador.UtilizadoresMelhorClassificação
+create proc SchemaUtilizador.UtilizadoresMelhorClassificacao
 as
 BEGIN
 	PRINT 'POR FAZER'
 END
-IF OBJECT_ID ('SchemaUtilizador.ClassificarCompraMes', 'P') IS NOT NULL
-	DROP proc SchemaUtilizador.ClassificarCompraMes;
+IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificacaoMes', 'P') IS NOT NULL
+	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificacaoMes;
 GO
-create proc SchemaUtilizador.ClassificarCompraMes
+create proc SchemaUtilizador.UtilizadoresMelhorClassificacaoMes
 as
 BEGIN
 	PRINT 'POR FAZER'
