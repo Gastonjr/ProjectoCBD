@@ -489,10 +489,11 @@ BEGIN
 	DECLARE @msgErro varchar(500)
 	if  not exists (select 1 from SchemaProduto.Produto where ProdutoId=@produtoID)
 	begin
-		set @msgErro = 'As compras deste mes ainda nao foram classificadas.'
+		set @msgErro = 'O produto não existe.'
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
-	select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
+	select top 1 LicitacaoValorMax from SchemaLicitacao.Licitacao 
+		where LicitacaoProdutoID=@produtoID order by LicitacaoValorMax desc
 END
 GO
