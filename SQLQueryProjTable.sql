@@ -38,10 +38,10 @@ Create table SchemaUtilizador.Utilizador (
 	UtilizadorClassificacaoMedia decimal (3,2),
 	UtilizadorTelefone varchar(9)
 	constraint uk_Telefone
-		unique (UtilizadorTelefone )
+		unique (UtilizadorTelefone)
 	constraint CK_Telelfone
 		check (UtilizadorTelefone like'[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
-		UtilizadorTipoUtilizadorID int not null /* campo acrescentado */
+		UtilizadorTipoUtilizadorID int not null default 1
 );
 
 Create table SchemaUtilizador.Seguidor (
@@ -141,12 +141,9 @@ Alter table SchemaUtilizador.Compra  add constraint Compra_fk_Licitacao
 
 Alter table SchemaUtilizador.Utilizador add constraint Utilizador_fk_TipoUtilizador
             foreign key (UtilizadorTipoUtilizadorID) references SchemaUtilizador.TipoUtilizador(TipoUtilizadorId) on delete cascade;
-
-
 Go
 
-
-
-
-
-
+Insert into SchemaUtilizador.TipoUtilizador(TipoUtilizadorNome) values('Administrador')
+Insert into SchemaUtilizador.TipoUtilizador(TipoUtilizadorNome) values('Gestor Financeiro')
+Insert into SchemaUtilizador.TipoUtilizador(TipoUtilizadorNome) values('Utilizador')
+Go
