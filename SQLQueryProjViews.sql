@@ -13,7 +13,7 @@ group by ProdutoUtilizadorID;
 Go
  --select * from SchemaProduto.vUtilizadorProvendoAvenda;
 
---criação de view que lista o numero de produtos vendidos.
+-----------------------criação de view que lista o numero de produtos vendidos--------------------------------------------------------------------------
 IF OBJECT_ID ('SchemaProduto.vUtilizadorProdutosVendidos', 'V') IS NOT NULL
 	DROP View SchemaProduto.vUtilizadorProdutosVendidos;
 GO
@@ -23,6 +23,9 @@ select UtilizadorId,  count(ProdutoId) as Produtosvendidos from SchemaUtilizador
 
 where ProdutoUtilizadorID= UtilizadorId and DATEDIFF(S, GETDATE(), ProdutoDataLimiteLeilao)<0 group by UtilizadorId;
 Go
+
+-----------------------criação de view que  lista o numero de produtos comprados ------------------------------------------------------------------------
+
 
 IF OBJECT_ID ('SchemaUtilizador.vUtililizadorLicitacaoCompra', 'V') IS NOT NULL
 	DROP View SchemaUtilizador.vUtililizadorLicitacaoCompra;
@@ -34,6 +37,8 @@ where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId
 group by UtilizadorId;
 Go
 
+
+------------------------criação da view que lista o utilizador com a melhor classificação------------------------------------------------------------------
 IF OBJECT_ID ('SchemaUtilizador.vUtilizadoresMelhorClassificação', 'V') IS NOT NULL
 	DROP View SchemaUtilizador.vUtilizadoresMelhorClassificação;
 GO
@@ -44,6 +49,8 @@ as
 	group by UtilizadorId;
 Go
 
+
+-------------------------criação da view que lista a classificação media de utilizador-----------------------------------------------------------------------
 IF OBJECT_ID ('SchemaUtilizador.vUtilizadoresMelhorClassificaoMes', 'V') IS NOT NULL
 	DROP View SchemaUtilizador.vUtilizadoresMelhorClassificaoMes;
 GO
@@ -53,3 +60,19 @@ as
 	where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId and DATEDIFF(m,ProdutoDataLimiteLeilao,GETDATE())<=1 and LicitacaoProdutoID=ProdutoId
 	group by UtilizadorId;
 Go
+
+
+-----------------------criação da view que lista o tipo de utilzador existente na base de dados---------------------------------------------------------------
+IF OBJECT_ID ('SchemaUtilizador.vUtipoUtilizador', 'V') IS NOT NULL
+	DROP View SchemaUtilizador.vUtipoUtilizador;
+GO
+create view SchemaUtilizador.vUtipoUtilizador
+as 
+
+select UtilizadorNome, TipoUtilizadorNome, UtilizadorDataRegisto from  SchemaUtilizador.Utilizador 
+join SchemaUtilizador.TipoUtilizador on TipoUtilizadorId=UtilizadorTipoUtilizadorID;
+
+	Go		
+
+
+	

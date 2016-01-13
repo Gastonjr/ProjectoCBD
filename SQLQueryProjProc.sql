@@ -234,7 +234,7 @@ BEGIN
 END
 GO
 
----------***procedimento que devolve uma lista de produto  seguido por um determinado uttilizador***------------------------------------
+-------------------***procedimento que devolve uma lista de produto  seguido por um determinado uttilizador***------------------------------------
 
 IF OBJECT_ID ('SchemaUtilizador.ProdutoSeguido', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoSeguido;
@@ -262,7 +262,7 @@ BEGIN
 END
 GO
 
----------*** Procedimento que devolve uma lista com produtos actualemnte a venda por um utilizador seguido***-------------------------------- 
+---------***Procedimento que devolve uma lista com produtos actualemnte a venda por um utilizador seguido***-------------------------------- 
 
 IF OBJECT_ID ('SchemaUtilizador.ProdutoVendaActual', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.ProdutoVendaActual;
@@ -493,7 +493,11 @@ BEGIN
 		RAISERROR(@msgErro,16,1) 
 		RETURN
 	end
+
 	select top 1 LicitacaoValorMax from SchemaLicitacao.Licitacao 
 		where LicitacaoProdutoID=@produtoID order by LicitacaoValorMax desc
+
 END
 GO
+
+--select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
