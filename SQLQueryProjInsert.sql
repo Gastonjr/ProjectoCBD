@@ -5,26 +5,26 @@ Go
 --Inserção de dados da tabela utilizador --
 ---------------------------------------------------------------------------------------------
 
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Dolan Moore','yI1nsH3ojV6fLB5c','placerat.orci.lacus@maurisaliquam.co.uk','2016-01-18','1956-01-04','967132109',1)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Myles Lowery','GG6opA4boD6ufR2h','Quisque.fringilla.euismod@Phasellus.org','2015-08-12','1956-07-14','941063393',2)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Yolanda Bailey','wK0zLU5pVX2suD5t','sem@nonmassanon.ca','2016-01-31','1937-02-03','976457812',3)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Aristotle Hurley','gE1qlB0rbF1plX7r','nunc@egestaslacinia.net','2016-05-25','1976-06-05','988891372',4)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Iliana Rhodes','GY7fWM6aMU7mAX7k','Cras@auctorMauris.org','2015-11-18','1978-08-31','936929381',5)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Magee Ramos','TN1tYS8qEV9rBS2x','Quisque@adipiscingelitEtiam.com','2016-08-07','1974-02-08','947118957',6)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Michael Quinn','eA5paJ0wGD1wFJ7k','Nunc.ut@Aliquam.ca','2016-07-29','1952-01-07','977587097',7)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Valentine Clarke','mL2oQC8evX2mmQ4d','metus.In.nec@interdumenim.com','2015-03-25','1952-09-21','960848668',8)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Nigel Espinoza','SY8lHZ1wqG1pzO3j','Integer.tincidunt@sodalesnisimagna.com','2016-07-29','1972-08-25','992130998',9)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Allegra Payne','wJ9buY0uQH6kgP2k','lectus.rutrum@tincidunt.net','2015-08-05','1983-10-21','999060901',10)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Lawrence Guzman','eR3byB7nFX5qtC9b','in.felis.Nulla@quislectus.net','2016-07-09','1948-01-15','971869678',11)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Teegan Gilbert','PA3oKU9tDE7jOA9w','ac@ultricesposuere.edu','2016-07-10','1944-03-09','984515189',12)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Velma Campbell','sZ8iTH3wfD8rEZ0t','enim@laoreet.edu','2015-11-03','1975-11-02','975146642',13)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Jaden Mcfadden','RT9ldG5apK6jjN3a','et.magna@semutdolor.org','2015-06-18','1985-07-08','981881981',14)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Athena Lynn','lE6rbJ5waK7wsY0t','Duis@pedesagittisaugue.ca','2015-10-09','1954-05-19','914012215',15)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Honorato Howell','AM2oMQ8mWS9wsI7s','Nulla.facilisi@magnisdisparturient.net','2016-04-17','1943-07-13','939685071',16)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Nina Hughes','VI4avN1iYU7mxB7b','elementum@tinciduntnunc.co.uk','2015-11-19','1981-10-13','967501987',17)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Yasir Albert','FJ4cqQ2mdA8kmZ2v','nec.cursus.a@Morbinequetellus.com','2015-12-15','1973-12-02','985213911',18)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Uta Bell','lD6xiM5vtI3hBQ4a','lacus.Quisque@eliterat.edu','2015-04-20','1970-08-22','920805323',19)
-INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone],[UtilizadorTipoUtilizadorID]) VALUES('Josephine Alford','YN8sLG0juU6cMI8z','quam@vulputateposuerevulputate.org','2016-02-18','1982-03-19','968881126',20);
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Dolan Moore','yI1nsH3ojV6fLB5c','placerat.orci.lacus@maurisaliquam.co.uk','2016-01-18','1956-01-04','967132109')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Myles Lowery','GG6opA4boD6ufR2h','Quisque.fringilla.euismod@Phasellus.org','2015-08-12','1956-07-14','941063393')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Yolanda Bailey','wK0zLU5pVX2suD5t','sem@nonmassanon.ca','2016-01-31','1937-02-03','976457812')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Aristotle Hurley','gE1qlB0rbF1plX7r','nunc@egestaslacinia.net','2016-05-25','1976-06-05','988891372')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Iliana Rhodes','GY7fWM6aMU7mAX7k','Cras@auctorMauris.org','2015-11-18','1978-08-31','936929381')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Magee Ramos','TN1tYS8qEV9rBS2x','Quisque@adipiscingelitEtiam.com','2016-08-07','1974-02-08','947118957')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Michael Quinn','eA5paJ0wGD1wFJ7k','Nunc.ut@Aliquam.ca','2016-07-29','1952-01-07','977587097')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Valentine Clarke','mL2oQC8evX2mmQ4d','metus.In.nec@interdumenim.com','2015-03-25','1952-09-21','960848668')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Nigel Espinoza','SY8lHZ1wqG1pzO3j','Integer.tincidunt@sodalesnisimagna.com','2016-07-29','1972-08-25','992130998')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Allegra Payne','wJ9buY0uQH6kgP2k','lectus.rutrum@tincidunt.net','2015-08-05','1983-10-21','999060901')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Lawrence Guzman','eR3byB7nFX5qtC9b','in.felis.Nulla@quislectus.net','2016-07-09','1948-01-15','971869678')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Teegan Gilbert','PA3oKU9tDE7jOA9w','ac@ultricesposuere.edu','2016-07-10','1944-03-09','984515189')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Velma Campbell','sZ8iTH3wfD8rEZ0t','enim@laoreet.edu','2015-11-03','1975-11-02','975146642')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Jaden Mcfadden','RT9ldG5apK6jjN3a','et.magna@semutdolor.org','2015-06-18','1985-07-08','981881981')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Athena Lynn','lE6rbJ5waK7wsY0t','Duis@pedesagittisaugue.ca','2015-10-09','1954-05-19','914012215')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Honorato Howell','AM2oMQ8mWS9wsI7s','Nulla.facilisi@magnisdisparturient.net','2016-04-17','1943-07-13','939685071')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Nina Hughes','VI4avN1iYU7mxB7b','elementum@tinciduntnunc.co.uk','2015-11-19','1981-10-13','967501987')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Yasir Albert','FJ4cqQ2mdA8kmZ2v','nec.cursus.a@Morbinequetellus.com','2015-12-15','1973-12-02','985213911')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Uta Bell','lD6xiM5vtI3hBQ4a','lacus.Quisque@eliterat.edu','2015-04-20','1970-08-22','920805323')
+INSERT INTO SchemaUtilizador.Utilizador([UtilizadorNome],[UtilizadorSenha],[UtilizadorEmail],[UtilizadorDataRegisto],[UtilizadorDataNascimento],[UtilizadorTelefone]) VALUES('Josephine Alford','YN8sLG0juU6cMI8z','quam@vulputateposuerevulputate.org','2016-02-18','1982-03-19','968881126');
 ---------------------------------------------------------------------------------------------
 --select * from SchemaUtilizador.Utilizador;
 --inserção de dados de seguidor---
@@ -155,30 +155,3 @@ go
 --INSERT INTO SchemaUtilizador.Compra (CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (5,10,13);
 --INSERT INTO SchemaUtilizador.Compra(CompraClassificacao,CompraLicitacaoID,CompraProdutoID) VALUES (null,3,2);
 --go 
-
-
--------------------------------------------------------------------------------------------------------------
-                --inserção de dados da tabela tipo de utilizador
--------------------------------------------------------------------------------------------------------------
-/*
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Luke Montoya')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Kadeem Mccarty')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Keegan Macias')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Wylie Meyers')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Baxter Cantrell')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Harrison Sharp')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Ryder Wilcox')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Malik Spears')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Isaac Boyd')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Dexter Campos')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Cain Zamora')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Jarrod Moses')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Lars Wood')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Hamilton Daugherty')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Felix Shannon')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Jordan Montgomery')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Bernard Blair')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Erich Leach')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Hoyt Bell')
-INSERT INTO SchemaUtilizador.TipoUtilizador (TipoUtilizadorNome) VALUES ('Quinn Nelson');
-*/
