@@ -480,3 +480,19 @@ GO
 --select  max(c.CompraClassificacao) from  SchemaUtilizador.Utilizador u, SchemaProduto.Produto  p, SchemaUtilizador.Compra c
 --	where p.ProdutoUtilizadorID= u.UtilizadorId and c.CompraProdutoID= p.ProdutoId;
 
+IF OBJECT_ID ('SchemaUtilizador.FinalizarCompra', 'P') IS NOT NULL
+	DROP proc SchemaUtilizador.FinalizarCompra;
+GO
+create proc SchemaUtilizador.FinalizarCompra(@produtoID int)
+as
+BEGIN
+	DECLARE @msgErro varchar(500)
+	if  not exists (select 1 from SchemaProduto.Produto where ProdutoId=@produtoID)
+	begin
+		set @msgErro = 'As compras deste mes ainda nao foram classificadas.'
+		RAISERROR(@msgErro,16,1) 
+		RETURN
+	end
+	select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
+END
+GO
