@@ -2,26 +2,16 @@ Use CBDLeiloes
 Go
 
 --Triggers que disparam--
-/*--Devido à forma como o procedimento procede o trigger foi declarado irrelevante.--
-IF OBJECT_ID ('SchemaLicitacao.TrLicitacao', 'TR') IS NOT NULL
-	DROP Trigger SchemaLicitacao.TrLicitacao ;
+
+IF OBJECT_ID ('SchemaProduto.TrProduto', 'TR') IS NOT NULL
+	DROP Trigger SchemaProduto.TrProduto;
 GO
-CREATE TRIGGER SchemaLicitacao.TrLicitacao
-ON SchemaLicitacao.Licitacao
+CREATE TRIGGER SchemaProduto.TrProduto
+ON SchemaProduto.Produto
 AFTER INSERT 
 AS
-Declare @data datetime
-Declare @produto int
-Declare @licitacao int
-Declare @valor decimal
-Declare @userID int
-Declare @valorMax decimal
 BEGIN
-	select @produto=LicitacaoProdutoID, @licitacao=LicitacaoId,
-		@userID=LicitacaoUtilizadorID, @valorMax=LicitacaoValorMax  
-		from inserted
-
-	execute SchemaLicitacao.procLicitarProd @userID,@produto, @valorMax
+	DECLARE @produtoID int
+	select @produtoID = ProdutoId from inserted
+	exec SchemaUtilizador.FinalizarCompra @produtoID
 END
-Go
-*/
