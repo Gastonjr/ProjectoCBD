@@ -40,7 +40,8 @@ Create table SchemaUtilizador.Utilizador (
 	constraint uk_Telefone
 		unique (UtilizadorTelefone )
 	constraint CK_Telelfone
-		check (UtilizadorTelefone like'[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')
+		check (UtilizadorTelefone like'[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+		UtilizadorTipoUtilizadorID int not null /* campo acrescentado */
 );
 
 Create table SchemaUtilizador.Seguidor (
@@ -82,6 +83,10 @@ Create table SchemaUtilizador.Compra(
 	CompraProdutoID int not null
 );
 
+Create table SchemaUtilizador.TipoUtilizador (
+	TipoUtilizadorId int identity(1,1) not null,
+	TipoUtilizadorNome varchar(50)
+	);
 Go 
 
 
@@ -98,9 +103,14 @@ Alter table SchemaUtilizador.SeguirProduto add constraint pk_SeguirProduto prima
 Alter table SchemaLicitacao.Licitacao add constraint pk_Licitacao primary key (LicitacaoId);
 
 Alter table SchemaUtilizador.Compra add constraint pk_Compra primary key (CompraId);
+
+Alter table SchemaUtilizador.TipoUtilizador add constraint pk_TipoUtilizador primary key (TipoUtilizadorId);
 Go
 
 --Adicionadas mais restrições porque restrições nunca são de mais ou as restrições de chaves estrangeiras--
+
+
+
 
 Alter table SchemaProduto.Produto add constraint Produto_fk_Utilizador
             foreign key (ProdutoUtilizadorID) references SchemaUtilizador.Utilizador(UtilizadorId) on delete cascade;
@@ -128,6 +138,11 @@ Alter table SchemaUtilizador.Compra add constraint Compra_fk_Produto
 
 Alter table SchemaUtilizador.Compra  add constraint Compra_fk_Licitacao
             foreign key (CompraLicitacaoID) references SchemaLicitacao.Licitacao(LicitacaoId) on delete cascade;
+
+Alter table SchemaUtilizador.Utilizador add constraint Utilizador_fk_TipoUtilizador
+            foreign key (UtilizadorTipoUtilizadorID) references SchemaUtilizador.TipoUtilizador(TipoUtilizadorId) on delete cascade;
+
+
 Go
 
 
