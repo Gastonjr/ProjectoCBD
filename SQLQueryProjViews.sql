@@ -57,7 +57,7 @@ GO
 create view SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
 as
 	select Top 10 UtilizadorId , AVG(CompraClassificacao) as 'Classificao Media'  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao, SchemaProduto.Produto
-	where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId and DATEDIFF(m,ProdutoDataLimiteLeilao,GETDATE())<=1 and LicitacaoProdutoID=ProdutoId
+	where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId and DATEDIFF(d,ProdutoDataLimiteLeilao,GETDATE())<=30 and LicitacaoProdutoID=ProdutoId
 	group by UtilizadorId;
 Go
 
