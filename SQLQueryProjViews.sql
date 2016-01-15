@@ -32,9 +32,9 @@ IF OBJECT_ID ('SchemaUtilizador.vUtililizadorLicitacaoCompra', 'V') IS NOT NULL
 GO
 create view SchemaUtilizador.vUtililizadorLicitacaoCompra
 as
-select UtilizadorId , COUNT(CompraProdutoID) as ProdutoComprado  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao
+select UtilizadorNome, COUNT(CompraProdutoID) as ProdutoComprado  from SchemaUtilizador.Compra, SchemaUtilizador.Utilizador, SchemaLicitacao.Licitacao
 where LicitacaoUtilizadorID= UtilizadorId and CompraLicitacaoID= LicitacaoId
-group by UtilizadorId;
+group by UtilizadorNome;
 Go
 
 
@@ -71,8 +71,7 @@ as
 
 select UtilizadorNome, TipoUtilizadorNome, UtilizadorDataRegisto from  SchemaUtilizador.Utilizador 
 join SchemaUtilizador.TipoUtilizador on TipoUtilizadorId=UtilizadorTipoUtilizadorID;
-
-	Go		
+Go		
 
 
 	
