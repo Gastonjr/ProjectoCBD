@@ -445,6 +445,12 @@ BEGIN
 end
 GO
 ------------------------------------Procedimento que apresenta os utilizadores com melhore classificação , nos produto vendidos -----------------------------------------------------------------------
+--Testes de compra
+--Insert into SchemaUtilizador.Compra(CompraLicitacaoID,CompraProdutoID,CompraClassificacao) values (1,1,null)
+--Insert into SchemaUtilizador.Compra(CompraLicitacaoID,CompraProdutoID,CompraClassificacao) values (2,2,4)
+--Insert into SchemaUtilizador.Compra(CompraLicitacaoID,CompraProdutoID,CompraClassificacao) values (3,3,5)
+--Insert into SchemaUtilizador.Compra(CompraLicitacaoID,CompraProdutoID,CompraClassificacao) values (4,4,2)
+--Insert into SchemaUtilizador.Compra(CompraLicitacaoID,CompraProdutoID,CompraClassificacao) values (5,5,null)
 IF OBJECT_ID ('SchemaUtilizador.UtilizadoresMelhorClassificacao', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.UtilizadoresMelhorClassificacao;
 GO
@@ -477,9 +483,9 @@ BEGIN
 	select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
 END
 GO
---select  max(c.CompraClassificacao) from  SchemaUtilizador.Utilizador u, SchemaProduto.Produto  p, SchemaUtilizador.Compra c
---	where p.ProdutoUtilizadorID= u.UtilizadorId and c.CompraProdutoID= p.ProdutoId;
-
+--Testes dos procedimentos de classificação
+--exec SchemaUtilizador.UtilizadoresMelhorClassificacao
+--exec SchemaUtilizador.UtilizadoresMelhorClassificacaoMes
 IF OBJECT_ID ('SchemaUtilizador.FinalizarCompra', 'P') IS NOT NULL
 	DROP proc SchemaUtilizador.FinalizarCompra;
 GO
@@ -499,5 +505,4 @@ BEGIN
 
 END
 GO
-
---select * from SchemaUtilizador.vUtilizadoresMelhorClassificaoMes
+--
