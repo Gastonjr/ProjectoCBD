@@ -1,0 +1,1 @@
+sqlcmd -S .\SQLEXPRESS -E -Q "EXEC sp_BackupDatabases @backupLocation='C:\SQLBackups\', @databaseName=’CBDLeiloes’, @backupType='F'"
